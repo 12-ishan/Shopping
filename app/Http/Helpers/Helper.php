@@ -5,6 +5,20 @@ use App\Models\Admin\Media;
 // use App\Model\Admin\Country;
 use App\Models\Admin\GlobalSetting;
 use App\Models\Admin\Setting;
+use App\Models\Admin\Gender;
+use App\Models\Admin\Salutation;
+use App\Models\Admin\BloodGroup;
+use App\Models\Admin\City;
+use App\Models\Admin\State;
+use App\Models\Admin\University;
+use App\Models\Admin\Degree;
+use App\Models\Admin\Mode;
+use App\Models\Admin\Board;
+use App\Models\Admin\Stream;
+use App\Models\Admin\AwardsLevel;
+use App\Models\Admin\ProficiencyLevel;
+
+
 
 if (! function_exists('imageUpload')) {
 
@@ -15,7 +29,7 @@ if (! function_exists('imageUpload')) {
             $image->move(public_path($path), $imageName);  // Upload imgae to specified folder
 
             $mediaRecord = Media::orderBy('sortOrder')->where('userId', $userId)->where('id', $referencedImageId)->first();
-
+           
             //Check if Media record exits for particular if not then add other wise update
 
             if (empty($mediaRecord)) {
@@ -55,8 +69,11 @@ if (! function_exists('imageUpload')) {
 if (! function_exists('imageUploadApi')) {
 
     function imageUploadApi($image, $referencedImageId, $path) {
-   
+
            $imageName =  time() . "_" . $image->getClientOriginalName();
+        //    echo '<pre>';
+        //    print_r($imageName);
+        //    die();
 
            $image->move(public_path($path), $imageName);  //Upload imgae to specified folder
 
@@ -114,9 +131,166 @@ if (! function_exists('getMediaName')) {
                 return $mediaRecord->name;
              
             }
-
     }
 }
+if (! function_exists('gender')) {
+
+    function gender($id) {
+   
+        $gender = Gender::orderBy('sortOrder')->where('id', $id)->first();
+        if (empty($gender)) {
+            return 0;
+        } else {
+            return $gender->name;
+        }
+    }
+}
+
+if (! function_exists('bloodGroup')) {
+
+    function bloodGroup($id) {
+   
+        $bloodGroup = BloodGroup::orderBy('sortOrder')->where('id', $id)->first();
+        if (empty($bloodGroup)) {
+            return 0;
+        } else {
+            return $bloodGroup->name;
+        }
+    }
+}
+
+if (! function_exists('city')) {
+
+    function city($id) {
+   
+        $city = City::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($city)) {
+            return 0;
+        } else {
+            return $city->name;
+        }
+    }
+}
+
+if (! function_exists('state')) {
+
+    function state($id) {
+   
+        $state = State::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($state)) {
+            return 0;
+        } else {
+            return $state->name;
+        }
+    }
+}
+
+if (! function_exists('salutation')) {
+
+    function salutation($id) {
+   
+        $salutation = Salutation::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($salutation)) {
+            return 0;
+        } else {
+            return $salutation->name;
+        }
+    }
+}
+
+if (! function_exists('university')) {
+
+    function university($id) {
+   
+        $university = University::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($university)) {
+            return 0;
+        } else {
+            return $university->name;
+        }
+    }
+}
+
+if (! function_exists('degree')) {
+
+    function degree($id) {
+   
+        $degree = Degree::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($degree)) {
+            return 0;
+        } else {
+            return $degree->name;
+        }
+    }
+}
+
+if (! function_exists('mode')) {
+
+    function mode($id) {
+   
+        $mode = Mode::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($mode)) {
+            return 0;
+        } else {
+            return $mode->name;
+        }
+    }
+}
+
+if (! function_exists('board')) {
+
+    function board($id) {
+   
+        $board = Board::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($board)) {
+            return 0;
+        } else {
+            return $board->name;
+        }
+    }
+}
+
+if (! function_exists('stream')) {
+
+    function stream($id) {
+   
+        $stream = Stream::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($stream)) {
+            return 0;
+        } else {
+            return $stream->name;
+        }
+    }
+}
+
+if (! function_exists('awardLevel')) {
+
+    function awardLevel($id) {
+   
+        $awardLevel = AwardsLevel::orderBy('sortOrder')->where('id', $id)->first();
+        if (empty($awardLevel)) {
+            return 0;
+        } else {
+            return $awardLevel->name;
+        }
+    }
+}
+
+if (! function_exists('proficiencyLevel')) {
+
+    function proficiencyLevel($id) {
+   
+        $proficiencyLevel = ProficiencyLevel::orderBy('sort_order')->where('id', $id)->first();
+        if (empty($proficiencyLevel)) {
+            return 0;
+        } else {
+            return $proficiencyLevel->name;
+        }
+    }
+}
+
+
+
 
 if (! function_exists('generateRandomOtp')) {
 
@@ -161,6 +335,8 @@ if (! function_exists('formatDate')) {
 
     function formatDate($date) {
         $formattedDate = date('d-m-y', strtotime($date));
+        print_r($formattedDate);
+        die();
         return $formattedDate;
     }
 }

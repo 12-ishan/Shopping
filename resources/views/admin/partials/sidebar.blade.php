@@ -242,6 +242,16 @@
                             </ul>
 
                             <ul class="collapse">
+                                <li @if(isset($activeSubMenu)) @if($activeSubMenu=='awardsLevel' ) class="active" @endif @endif>
+                                    <a href="#" aria-expanded="true">Level of Awards/Recognition</a>
+                                    <ul class="collapse">
+                                        <li><a href="{{ url('/admin/awardsLevel') }}">Manage Level of Awards/Recognition</a></li>
+                                        <li><a href="{{ url('/admin/awardsLevel/create') }}">Add Level of Awards/Recognition</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <ul class="collapse">
                                 <li @if(isset($activeSubMenu)) @if($activeSubMenu=='mode' ) class="active" @endif @endif>
                                     <a href="#" aria-expanded="true">Mode</a>
                                     <ul class="collapse">

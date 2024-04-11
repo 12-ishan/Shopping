@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('student', function (Blueprint $table) {
             //
-            $table->bigInteger('phone_number')->unique()->nullable()->after('email');
+            $table->bigInteger('phone_number')->nullable()->after('email');
         });
     }
 

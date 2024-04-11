@@ -161,9 +161,6 @@ class ProgramController extends Controller
         $program->metaKeyword = $request->input('metaKeyword');
         $program->metaDescription = $request->input('metaDescription');
         $program->description = $request->input('description');
-
-       
-
         $program->save();
 
         return redirect()->route('program.index')->with('message', 'Program Updated Successfully');

@@ -33,6 +33,7 @@ use App\Http\Controllers\admin\StudentManagerController;
 use App\Http\Controllers\admin\ApplicationController;
 use App\Http\Controllers\admin\CouponController;
 use App\Http\Controllers\admin\PaymentHistoryController;
+use App\Http\Controllers\admin\AwardsLevelController;
 
 
 
@@ -181,6 +182,13 @@ Route::group(['middleware' => ['auth']], function () {
            Route::post('admin/degree/updateStatus',[ DegreeController::class, 'updateStatus']);
            Route::resource('admin/degree', DegreeController::class);
            //Degree Routings 
+
+           //Level of Awards and recognition Routings
+           Route::post('admin/awardsLevel/updateSortorder',[ AwardsLevelController::class, 'updateSortorder']);
+           Route::post('admin/awardsLevel/destroyAll',[ AwardsLevelController::class, 'destroyAll']);
+           Route::post('admin/awardsLevel/updateStatus',[ AwardsLevelController::class, 'updateStatus']);
+           Route::resource('admin/awardsLevel', AwardsLevelController::class);
+           //Level of Awards and recognition Routings 
            
             //Mode Routings
             Route::post('admin/mode/updateSortorder',[ ModeController::class, 'updateSortorder']);

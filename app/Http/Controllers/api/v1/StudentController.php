@@ -15,63 +15,85 @@ use Validator;
 
 class StudentController extends Controller
 {
-    //
-    public function studentRegister(Request $request)
-    {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:student,email',
-            'phone_number' => 'required|unique:student',
-            'password' => 'required|min:8',
-        ]);
-    
-        // Check if validation fails
-        if ($validator->fails()) {
-            $errors = $validator->errors()->all();
-            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
-        }
-    
-        // Proceed with registration if validation passes
-        $checkStudent = Student::where('email', $request->email)->first();
-    
-        if (empty($checkStudent))
-         {
-            $student = new Student();
-    
-            $password = $request->input('password');
-    
-            $student->first_name = $request->input('first_name');
-            $student->last_name = $request->input('last_name');
-            $student->email = $request->input('email');
-            $student->phone_number = $request->input('phone_number');
-            $student->password = Hash::make($password);
-            $student->receive_updates = $request->input('receive_updates');
-            $student->is_otp_verified = 0;
-            $student->otp = generateRandomOtp(6);
-            $student->status = 1;
-            $student->sort_order = 1;
-            $student->increment('sort_order');
-            $student->save();
-    
-            $token = $student->createToken($request->email)->plainTextToken;
-    
-            $response = [
-                'message' => 'Registered successfully',
-                'status' => 'success',
-                'student' => $student->id,
-                'token' => $token
-            ];
-        } else {
-            $response = [
-                'message' => 'Email already exists',
-                'status' => 'failed'
-            ];
-        }
-    
-        return response()->json($response, 201);
+
+public function studentRegister(Request $request)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'first_name' => 'required',
+        'last_name' => 'required',
+        'register_email' => 'required|email',
+        'phone_number' => 'required',
+        'register_password' => 'required|min:8'
+    ]);
+
+    // Check if validation fails
+    if ($validator->fails()) {
+        $errors = $validator->errors()->all();
+        return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
     }
+
+    $checkStudent = Student::where('email', $request->register_email)->first();
+    
+    if (empty($checkStudent)) {
+       
+        $student = new Student();
+        $student->first_name = $request->input('first_name');
+        $student->last_name = $request->input('last_name');
+        $student->email = $request->input('register_email');
+        $student->phone_number = $request->input('phone_number');
+        $student->password = Hash::make($request->input('register_password'));
+        $student->receive_updates = $request->input('receive_updates');
+        $student->is_otp_verified = 0;
+        $student->otp = generateRandomOtp(6);
+        $student->status = 1;
+        $student->sort_order = 1;
+        $student->increment('sort_order');
+        $student->save();
+
+        $studentId = $student->id;
+
+        $response = [
+            'message' => 'Registered successfully',
+            'status' => 'success',
+            'student' => $studentId,
+        ];
+    }
+    else {
+        $studentId = $checkStudent->id;
+
+        $response = [
+            'message' => 'Student already exists',
+            'status' => 'error',
+            'student' => $studentId,
+        ];
+    }
+
+    $applicationExists = Application::where('student_id', $studentId)
+        ->where('program_id', $request->program_id)
+        ->exists();
+
+    if ($applicationExists) {
+        $response = [
+            'message' => 'You have already enrolled',
+            'status' => 'error',
+        ];
+    } else {
+        $application = new Application();
+        $application->student_id = $studentId;
+        $application->program_id = $request->program_id;
+        $application->status = 1;
+        $application->sort_order = 1;
+        $application->save();
+
+        $response = [
+            'message' => 'Application created successfully',
+            'status' => 'success',
+        ];
+    }
+
+    return response()->json($response, 201);
+}
 
     public function verifyOtp(Request $request)
     {
@@ -181,7 +203,8 @@ class StudentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
+            "program_id" => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -197,19 +220,27 @@ class StudentController extends Controller
             if ($user->status == 1) {
 
                $studentId = Auth::guard('student')->user()->id; 
+               $programId = $request->program_id;
+           
+              $applicationDetails = Application::where('student_id', $studentId)->where('program_id', $programId)->first();
 
+              if(empty($applicationDetails)){
+                $response = [
+                    'message' => 'invalid credentials',
+                    'status' => '0'
+                   ];  
+              }
 
-              // $applicationId = Application::select('id')->where('student_id',  $studentId )->first();
-              $applicationId = Application::where('student_id', $studentId)->pluck('id')->first();
-               
+              else{ 
                $token = $user->createToken($request->email)->plainTextToken;
 
                $response = [
                 'message' => 'login success',
                 'status' => '1',
                 'token' => $token,
-                'applicationId' => $applicationId
+                'applicationId' => $applicationDetails->id
                ];
+             }
                 
             }else{
 

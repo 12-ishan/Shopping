@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('parent_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('application_id')->nullable();
-            $table->string('father_salutation')->nullable();
+            $table->unsignedBigInteger('father_salutation')->nullable();
             $table->string('father_name')->nullable();
             $table->string('father_email')->nullable();
             $table->bigInteger('father_mobile')->nullable();

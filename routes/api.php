@@ -58,31 +58,31 @@ Route::middleware('auth:sanctum')->group( function () {
 
     //parent-details route
     Route::post('/v1/save-parent-details', [ApplicationsController::class, 'storeApplicantParent']);
-    Route::get('/v1/get-parent-details', [ApplicationsController::class, 'getParent']);
+    Route::post('/v1/get-parent-details', [ApplicationsController::class, 'getParent']);
     //parent-details route ends
 
     //academics route
     Route::post('/v1/save-academics', [ApplicationsController::class, 'storeAcademics']);
-    Route::get('/v1/get-academics', [ApplicationsController::class, 'getAcademics']);
+    Route::post('/v1/get-academics', [ApplicationsController::class, 'getAcademics']);
     //academics route ends
 
     //awardsRecognition route
     Route::post('/v1/save-awards-recognition', [ApplicationsController::class, 'storeAwardsRecognition']);
-    Route::get('/v1/get-awards-recognition', [ApplicationsController::class, 'getAwardsRecognition']);
+    Route::post('/v1/get-awards-recognition', [ApplicationsController::class, 'getAwardsRecognition']);
     //awardsRecognition route ends
 
     //scholarship route
     Route::post('/v1/save-scholarship', [ApplicationsController::class, 'storeScholarship']);
-    Route::get('/v1/get-scholarship', [ApplicationsController::class, 'getScholarship']);
+    Route::post('/v1/get-scholarship', [ApplicationsController::class, 'getScholarship']);
     //scholarship route ends
 
     //Document route
     Route::post('/v1/save-document', [ApplicationsController::class, 'storeDocument']);
-    Route::get('/v1/get-document', [ApplicationsController::class, 'getDocument']);
+    Route::post('/v1/get-document', [ApplicationsController::class, 'getDocument']);
     //Document route ends
 
     //formPreview route
-    Route::get('/v1/form-preview', [ApplicationsController::class, 'formPreview']);
+    Route::post('/v1/form-preview', [ApplicationsController::class, 'formPreview']);
     Route::post('/v1/save-form-preview', [ApplicationsController::class, 'saveFormPreview']);
     //formPreview route ends
 
@@ -90,7 +90,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/v1/media-upload', [MediaController::class, 'mediaUpload']);
     //media upload ends
 
-    // Route::post('/v1/program-test', [ProgramVerifyController::class, 'programTest']);
+    
     Route::post('/v1/program-test', [ProgramVerifyController::class, 'programTest']);
 
 

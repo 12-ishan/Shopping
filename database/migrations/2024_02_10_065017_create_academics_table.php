@@ -23,15 +23,15 @@ return new class extends Migration
             $table->string('ug_percentage')->nullable();
             $table->string('im_diploma_pursue')->nullable();
             $table->string('im_college')->nullable();
-            $table->string('im_board')->nullable();
+            $table->unsignedBigInteger('im_board')->nullable();
             $table->unsignedBigInteger('im_stream')->nullable();
             $table->string('im_percentage')->nullable();
             $table->string('im_enroll_year')->nullable();
             $table->string('im_pass_year')->nullable();
             $table->string('hg_school')->nullable();
-            $table->string('hg_board')->nullable();
+            $table->unsignedBigInteger('hg_board')->nullable();
             $table->string('hg_percentage')->nullable();
-            $table->string('hg_stream')->nullable();
+            $table->unsignedBigInteger('hg_stream')->nullable();
             $table->string('hg_enroll_year')->nullable();
             $table->string('hg_pass_year')->nullable();
             $table->tinyInteger('status');

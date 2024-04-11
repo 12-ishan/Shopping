@@ -16,15 +16,15 @@ return new class extends Migration
             $table->unsignedBigInteger('application_id')->nullable();
             $table->string('ar_name')->nullable();
             $table->string('ar_first')->nullable();
-            $table->unsignedBigInteger('ar_level_first')->nullable();
+            $table->string('ar_level_first')->nullable();
             $table->string('ar_fr_year')->nullable();
             $table->string('ar_second')->nullable();
-            $table->unsignedBigInteger('ar_level_second')->nullable();
+            $table->string('ar_level_second')->nullable();
             $table->string('ar_sr_year')->nullable();
             $table->string('lp_lang1')->nullable();
             $table->string('lp_lang2')->nullable();
             $table->string('lp_p_lang1')->nullable();
-            $table->unsignedBigInteger('lp_p_lang2')->nullable();
+            $table->string('lp_p_lang2')->nullable();
             $table->string('ho_hobby1')->nullable();
             $table->string('ho_hobby2')->nullable();
             $table->string('ho_hobby3')->nullable();
