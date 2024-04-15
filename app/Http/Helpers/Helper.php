@@ -335,8 +335,6 @@ if (! function_exists('formatDate')) {
 
     function formatDate($date) {
         $formattedDate = date('d-m-y', strtotime($date));
-        print_r($formattedDate);
-        die();
         return $formattedDate;
     }
 }

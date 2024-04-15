@@ -192,7 +192,7 @@ class ApplicationsController extends Controller
             'pdProfile' => url('/') . "/uploads/applications/" . getMediaName($array['pd_profile_id']),
             'pdGenderId' =>  gender($array['pd_gender_id']),
             'pdBloodGroupId' => bloodGroup($array['pd_bg_id']),
-            'pdDob' =>  $array['pd_dob'] != null ? formatDate($array['pd_dob']) : null,
+            'pdDob' => $array['pd_dob'] != null ? formatDate($array['pd_dob']) : null,
             'pdCurrentDateTime' =>  $array['pd_cdate_time'],
             'caHouseNumber' =>  $array['ca_house_number'],
             'caCity' =>  city($array['ca_city']),
