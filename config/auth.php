@@ -40,9 +40,9 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'student' => [
+        'customer' => [
             'driver' => 'session',
-            'provider' => 'student',
+            'provider' => 'customer',
         ],
     ],
 
@@ -68,9 +68,9 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'student' => [
+        'customer' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Student::class,
+            'model' => App\Models\Customer::class,
         ],
 
         // 'users' => [
@@ -105,8 +105,8 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-        'student' => [
-            'provider' => 'student',
+        'customer' => [
+            'provider' => 'customer',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

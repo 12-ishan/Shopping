@@ -35,6 +35,9 @@ use App\Http\Controllers\admin\CouponController;
 use App\Http\Controllers\admin\PaymentHistoryController;
 use App\Http\Controllers\admin\AwardsLevelController;
 
+use App\Http\Controllers\admin\ProductCategoryController;
+use App\Http\Controllers\admin\ProductController;
+
 
 
 
@@ -86,6 +89,27 @@ Route::post('login',[AdminController::class, 'doLogin'])->name('doLogin');
 
 
 Route::group(['middleware' => ['auth']], function () {
+
+
+     //Product Category Routings
+    
+     Route::post('admin/product-category/updateSortorder',[ProductCategoryController::class, 'updateSortorder']);
+     Route::post('admin/product-category/destroyAll',[ProductCategoryController::class, 'destroyAll']);
+     Route::post('admin/product-category/updateStatus',[ProductCategoryController::class, 'updateStatus']);
+     Route::resource('admin/product-category', ProductCategoryController::class);
+ 
+     ///Product Category Routings ends
+
+
+      //Product  Routings
+  
+      Route::post('admin/product/updateSortorder',[ProductController::class, 'updateSortorder']);
+      Route::post('admin/product/destroyAll',[ProductController::class, 'destroyAll']);
+      Route::post('admin/product/updateStatus',[ProductController::class, 'updateStatus']);
+      Route::resource('admin/product', ProductController::class);
+  
+      ///Product  Routings ends
+
     // demo for role based API
     Route::get('admin/emp-role', [EmployeeController::class, 'index'])->name('emp-role')->middleware('can:add.blog');
     Route::get('admin/user/{id}/edit',[UserController::class, 'edit'])->name('user.edit');

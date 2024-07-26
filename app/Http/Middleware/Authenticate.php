@@ -14,8 +14,8 @@ class Authenticate extends Middleware
     {
         $guard = $request->expectsJson() ? null : $this->auth->getDefaultDriver();
 
-        if ($guard === 'student') {
-            return route('studentLogin');
+        if ($guard === 'customer') {
+            return route('customerLogin');
         } elseif ($guard === 'user') {
             return route('adminLogin');
         }

@@ -19,8 +19,37 @@
                                 </ul> -->
                     </li>
 
-                    <?php /* ?>
+                   
 
+                       <li @if(isset($activeMenu)) @if($activeMenu=='Product' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Product Manager
+                            </span></a>
+
+                        <ul class="collapse">
+                            <li><a href="{{ url('/admin/product') }}">Manage Product</a></li>
+                            <li><a href="{{ url('/admin/product/create') }}">Add Product</a></li>
+
+
+                        </ul>
+                    </li>
+
+
+                    <li @if(isset($activeMenu)) @if($activeMenu=='Product Category' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Product Category
+                            </span></a>
+
+
+                        <ul class="collapse">
+                            <li><a href="{{ url('/admin/product-category') }}">Manage Product Category</a></li>
+                            <li><a href="{{ url('/admin/product-category/create') }}">Add Product Category</a></li>
+
+
+                        </ul>
+                    </li>
+                  
+                    <?php /*
                     <li @if(isset($activeMenu)) @if($activeMenu=='promoter' ) class="active" @endif @endif>
                         <a href="javascript:void(0)" aria-expanded="true"><i
                                 class="ti-layout-sidebar-left"></i><span>Manage Promoters

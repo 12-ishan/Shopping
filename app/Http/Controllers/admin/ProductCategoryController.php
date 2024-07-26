@@ -5,12 +5,11 @@ namespace App\Http\Controllers\admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\ProductCategory;
-use App\Models\Admin\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
-class ProductController extends Controller
+class ProductCategoryController extends Controller
 {
 
     public function __construct()
@@ -31,10 +30,12 @@ class ProductController extends Controller
     public function index()
     {
         $data = array();
-        $data["products"] = Product::orderBy('sortOrder')->get();
-        $data["pageTitle"] = 'Manage Product';
-        $data["activeMenu"] = 'Product';
-        return view('admin.product.manage')->with($data);
+
+        $data["productCategory"] = ProductCategory::orderBy('sortOrder')->get();
+
+        $data["pageTitle"] = 'Manage Product Category';
+        $data["activeMenu"] = 'Product Category';
+        return view('admin.productCategory.manage')->with($data);
     }
 
     /**
@@ -46,10 +47,9 @@ class ProductController extends Controller
     {
         $data = array();
 
-        $data["productCategory"] = ProductCategory::where('status',1)->orderBy('sortOrder')->get();
-        $data["pageTitle"] = 'Add Product';
-        $data["activeMenu"] = 'Product';
-        return view('admin.product.create')->with($data);
+        $data["pageTitle"] = 'Add Product Category';
+        $data["activeMenu"] = 'Product Category';
+        return view('admin.productCategory.create')->with($data);
     }
 
     /**
@@ -62,36 +62,23 @@ class ProductController extends Controller
     {
         $this->validate(request(), [
             'name' => 'required',
-            'image' => 'image|required|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required'
-           
-            
+ 
         ]);
 
-        $product = new product();
+        $productCategory = new ProductCategory();
 
-        if ($request->hasFile('image')) {  
-
-            $mediaId = imageUpload($request->image, $product->imageId, $this->userId, "uploads/productImage/"); 
-           
-            $product->imageId = $mediaId;
- 
-         }
-
-        $product->category_id = $request->input('categoryId');
-        $product->name = $request->input('name');
-        $product->slug = str::slug($request->input('name'));
-        $product->price = $request->input('price');
-        $product->description = $request->input('description');
+        $productCategory->name = $request->input('name');
+        $productCategory->slug = str::slug($request->input('name'));
+        $productCategory->description = $request->input('description');
        
-        $product->status = 1;
-        $product->sortOrder = 1;
+        $productCategory->status = 1;
+        $productCategory->sortOrder = 1;
 
-        $product->increment('sortOrder');
+        $productCategory->increment('sortOrder');
 
-        $product->save();
+        $productCategory->save();
 
-        return redirect()->route('product.index')->with('message', 'Product Added Successfully');
+        return redirect()->route('product-category.index')->with('message', 'Category Added Successfully');
     }
 
     /**
@@ -116,13 +103,11 @@ class ProductController extends Controller
         
         $data = array();
 
-        $data['product'] = Product::find($id);
-        $data["productCategory"] = ProductCategory::orderBy('sortOrder')->get();
-
+        $data['productCategory'] = ProductCategory::find($id);
         $data["editStatus"] = 1;
-        $data["pageTitle"] = 'Update Product';
-        $data["activeMenu"] = 'Product';
-        return view('admin.product.create')->with($data);
+        $data["pageTitle"] = 'Update Product Category';
+        $data["activeMenu"] = 'product Category';
+        return view('admin.productCategory.create')->with($data);
     }
 
     /**
@@ -137,41 +122,20 @@ class ProductController extends Controller
 
         $this->validate(request(), [
             'name' => 'required',
-            'image' => 'image|required|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required'
            
         ]);
         
         $id = $request->input('id');
 
+        $productCategory = ProductCategory::find($id);
 
-        $product = Product::find($id);
-        // echo '<pre>';
-        // print_r($product);
-        // die();
+        $productCategory->name = $request->input('name');
+        $productCategory->slug = urlencode($request->input('name'));
+        $productCategory->description = $request->input('description');
 
-        if ($request->hasFile('image')) { 
+        $productCategory->save();
 
-           
-            $mediaId = imageUpload($request->image, $product->imageId, $this->userId, "uploads/productImage/"); 
-            // echo '<pre>';
-            // print_r($mediaId);
-            // die();
-    
-            
-            $product->imageId = $mediaId;
- 
-         }
-
-       $product->category_id = $request->input('categoryId');
-        $product->name = $request->input('name');
-        $product->slug = urlencode($request->input('name'));
-        $product->price = $request->input('price');
-        $product->description = $request->input('description');
-
-        $product->save();
-
-        return redirect()->route('product.index')->with('message', 'Product Updated Successfully');
+        return redirect()->route('product-category.index')->with('message', 'category Updated Successfully');
     }
 
     /**
@@ -183,8 +147,8 @@ class ProductController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-        $product = Product::find($id);
-        $product->delete($id);
+        $productCategory = ProductCategory::find($id);
+        $productCategory->delete($id);
 
         return response()->json([
             'status' => 1,
@@ -207,8 +171,8 @@ class ProductController extends Controller
         if (isset($record) && !empty($record)) {
 
             foreach ($record as $id) {
-                $product = Product::find($id);
-                $product->delete();
+                $productCategory = ProductCategory::find($id);
+                $productCategory->delete();
             }
         }
 
@@ -235,9 +199,9 @@ class ProductController extends Controller
             foreach ($decoded_data as $values) {
 
                 $id = $values->id;
-                $product = Product::find($id);
-                $product->sortOrder = $values->position;
-                $result = $product->save();
+                $productCategory = ProductCategory::find($id);
+                $productCategory->sortOrder = $values->position;
+                $result = $productCategory->save();
             }
         }
 
@@ -261,9 +225,9 @@ class ProductController extends Controller
         $status = $request->status;
         $id = $request->id;
 
-        $product = Product::find($id);
-        $product->status = $status;
-        $result = $product->save();
+        $productCategory = ProductCategory::find($id);
+        $productCategory->status = $status;
+        $result = $productCategory->save();
 
         if ($result) {
             $response = array('status' => 1, 'message' => 'Status updated', 'response' => '');
