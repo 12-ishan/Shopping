@@ -7,6 +7,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Validator;
 
 
@@ -66,7 +67,7 @@ public function customerRegister(Request $request)
    
     public function customerLogin(Request $request)
     {
-        // Validate the request
+       
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:8',
@@ -79,30 +80,44 @@ public function customerRegister(Request $request)
         }
     
         $credentials = $request->only('email', 'password');
-    
-        // Attempt to log in the customer
+       
         if (Auth::guard('customer')->attempt($credentials)) {
             $request->session()->regenerate();
     
             $customer = Auth::guard('customer')->user();
+            // echo '<pre>';
+            // print_r($customer);
+            // die();
     
             if ($customer->status == 1) {
                 // Generate a token
                // $token = $customer->createToken('Personal Access Token')->plainTextToken;
     
                $token = $customer->createToken('auth_token')->plainTextToken;
+            //    echo '<pre>';
+            //    print_r($token);
+            //    die();
 
                 \Log::info('Generated Token: ' . $token);
     
                 // Set the token as an HttpOnly cookie
                // $cookie = cookie('token', $token, 60, '/', null, false, true);
+            //    $cookie = cookie('sanctum_token', $token, 60 * 24, '/', null, false, true, false, 'None');
+
+             //  \Log::info('Token: ' . $cookie);
     
                 return response()->json([
                     'message' => 'Login successful',
-                    'status' => '1',
+                    'status' => '1'
+                  // 'access_token' => $token, 'token_type' => 'Bearer'
                 ])->withCookie(
                     cookie('sanctum_token', $token, 60 * 24, null, null, true, true, false, 'None')
                 );
+
+                // return response()->json(['message' => 'Login successful.'])
+                // ->cookie('laravel_session', $request->session()->getId(), 60, null, null, false, true);
+        
+
             } else {
                 // Log out if account is inactive
                 Auth::guard('customer')->logout();
@@ -122,20 +137,79 @@ public function customerRegister(Request $request)
     
     public function myProfile(Request $request)
     {
-        // Access the token from the cookie
-        $token = $request->cookie('sanctum_token');
+        // // echo '<pre>';
+        // // print_r($request->all());
+        // // die();
+        // // Access the token from the cookie
+        // $token = $request->cookie('sanctum_token');
+        // // echo '<pre>';
+        // // print_r($token);
+        // // die();
 
-        // Log the token
-        \Log::info('Sanctum Token: ' . $token);
+        // // Log the token
+        // \Log::info('Sanctum Token: ' . $token);
 
         return response()->json([
             'message' => 'my profile',
             'status' => '1',
-            'token' => $token
+           // 'token' => $token
         ], 200);
     }
   
-    
+    // public function customerLogin(Request $request)
+    // {
+    //     // Validate the request
+    //     $validator = Validator::make($request->all(), [
+    //         'email' => 'required|email',
+    //         'password' => 'required|min:8',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'error' => $validator->errors()
+    //         ], 422);
+    //     }
+
+    //     $credentials = $request->only('email', 'password');
+
+    //     // Attempt to log in the customer
+    //     if (Auth::guard('customer')->attempt($credentials)) {
+    //         \Log::info('Session ID: ' . $request->session()->getId());
+    //         $request->session()->regenerate();
+
+    //         $customer = Auth::guard('customer')->user();
+
+    //         if ($customer->status == 1) {
+    //             return response()->json([
+    //                 'message' => 'Login successful',
+    //                 'status' => '1'
+    //             ]);
+    //         } else {
+    //             // Log out if account is inactive
+    //             Auth::guard('customer')->logout();
+
+    //             return response()->json([
+    //                 'message' => 'Your account is inactive',
+    //                 'status' => '0'
+    //             ], 403);
+    //         }
+    //     } else {
+    //         return response()->json([
+    //             'message' => 'Invalid credentials',
+    //             'status' => '0'
+    //         ], 401);
+    //     }
+    // }
+
+    // public function myProfile(Request $request)
+    // {
+    //     \Log::info('Session ID: ' . $request->session()->getId());
+    //     // Your profile logic here
+    //     $user = Auth::guard('customer')->user();
+
+    //     return response()->json(['user' => $user]);
+    // }
+
 
  
 }

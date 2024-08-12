@@ -17,6 +17,7 @@ use App\Models\Admin\Board;
 use App\Models\Admin\Stream;
 use App\Models\Admin\AwardsLevel;
 use App\Models\Admin\ProficiencyLevel;
+use App\Models\Admin\ProductCategory;
 
 
 
@@ -111,6 +112,19 @@ if (! function_exists('imageUploadApi')) {
 
             return $media->id;
 
+    }
+}
+
+if (! function_exists('productCategory')) {
+
+    function productCategory($id) {
+   
+        $productCategory = ProductCategory::orderBy('sortOrder')->where('id', $id)->first();
+        if (empty($productCategory)) {
+            return 0;
+        } else {
+            return $productCategory->name;
+        }
     }
 }
 

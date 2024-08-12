@@ -35,55 +35,70 @@ class ProductCategoryController extends Controller
     }
 
     public function getProductByCategory($slug)
-    {
-        $category = ProductCategory::where('slug', $slug)->first();
-       
-        if (empty($category)) {
+{
+    $category = ProductCategory::where('slug', $slug)->first();
+   
+    if (empty($category)) {
+        $response = [
+            'message' => 'Category not exists',
+            'status' => '0',
+          //  'products' => []
+        ];
+    } else {
+        $products = Product::where('category_id', $category->id)->get();
+        $data = [];
+
+        foreach ($products as $product) {
+            $mediaName = url('/') . "/uploads/productImage/" . getMediaName($product['imageId']);
+            $productCategoryName = productCategory($product['category_id']); 
+
+            $data[] = [
+                'id' => $product['id'],
+                'name' => $product['name'],
+                'slug' => $product['slug'],
+                'media_name' => $mediaName,
+                'price' => $product['price'],
+                'description' => $product['description'],
+                'product_category' => $productCategoryName // Add the category name to the response
+            ];
+        }
+
+        if ($products->isEmpty()) {
             $response = [
-                'message' => 'Category not exists',
+                'message' => 'Product not found',
                 'status' => '0',
                 'products' => []
             ];
         } else {
-            $products = Product::where('category_id', $category->id)->get();
-            $data = [];
-    
-            foreach ($products as $product) {
-                $mediaName = url('/') . "/uploads/productImage/" . getMediaName($product['imageId']);
-    
-                $data[] = [
-                    'id' => $product['id'],
-                    'name' => $product['name'],
-                    'slug' => $product['slug'],
-                    'media_name' => $mediaName,
-                    'price' => $product['price'],
-                    'description' => $product['description']
-                ];
-            }
-    
-            if ($products->isEmpty()) {
-                $response = [
-                    'message' => 'Product not found',
-                    'status' => '0',
-                    'products' => []
-                ];
-            } else {
-                $response = [
-                    'message' => 'Products exist',
-                    'status' => '1',
-                    'products' => $data,
-                    'categoryName' => $category->name
-                ];
-            }
+            $response = [
+                'message' => 'Products exist',
+                'status' => '1',
+                'products' => $data,
+                'categoryName' => $category->name
+            ];
         }
-    
-        return response()->json($response, 200);
     }
-    
 
+    return response()->json($response, 200);
 }
 
 
+
+public function getSingleProduct($slug){
+
+    $product = Product::where('slug', $slug)->first();
+
+    if($product){
+    $reponse = [
+        'message' => 'single product detail',
+        'status' => '1',
+        'product' => $product
+    ];
+   }
+
+   return response()->json($response, 201);
+
+}
    
-   
+}  
 

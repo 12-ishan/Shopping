@@ -14,7 +14,23 @@ class Product extends Model
     }
 
     public function image()
-{
-    return $this->belongsTo(Media::class, 'imageId');
-}
+    {
+        return $this->belongsTo(Media::class, 'imageId');
+    }
+
+    public function productVariation()
+    {
+        return $this->hasMany(ProductVariation::class);
+    }
+   
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    public function attributeOptions()
+    {
+        return $this->hasManyThrough(AttributeOption::class, ProductAttribute::class, 'product_id', 'attribute_id', 'id', 'attribute_id');
+    }
+        
 }

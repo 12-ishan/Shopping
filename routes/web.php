@@ -35,11 +35,10 @@ use App\Http\Controllers\admin\CouponController;
 use App\Http\Controllers\admin\PaymentHistoryController;
 use App\Http\Controllers\admin\AwardsLevelController;
 
-use App\Http\Controllers\admin\ProductCategoryController;
 use App\Http\Controllers\admin\ProductController;
-
-
-
+use App\Http\Controllers\admin\ProductCategoryController;
+use App\Http\Controllers\admin\ProductAttributesController;
+use App\Http\Controllers\admin\AttributeOptionsController;
 
 
 
@@ -89,27 +88,6 @@ Route::post('login',[AdminController::class, 'doLogin'])->name('doLogin');
 
 
 Route::group(['middleware' => ['auth']], function () {
-
-
-     //Product Category Routings
-    
-     Route::post('admin/product-category/updateSortorder',[ProductCategoryController::class, 'updateSortorder']);
-     Route::post('admin/product-category/destroyAll',[ProductCategoryController::class, 'destroyAll']);
-     Route::post('admin/product-category/updateStatus',[ProductCategoryController::class, 'updateStatus']);
-     Route::resource('admin/product-category', ProductCategoryController::class);
- 
-     ///Product Category Routings ends
-
-
-      //Product  Routings
-  
-      Route::post('admin/product/updateSortorder',[ProductController::class, 'updateSortorder']);
-      Route::post('admin/product/destroyAll',[ProductController::class, 'destroyAll']);
-      Route::post('admin/product/updateStatus',[ProductController::class, 'updateStatus']);
-      Route::resource('admin/product', ProductController::class);
-  
-      ///Product  Routings ends
-
     // demo for role based API
     Route::get('admin/emp-role', [EmployeeController::class, 'index'])->name('emp-role')->middleware('can:add.blog');
     Route::get('admin/user/{id}/edit',[UserController::class, 'edit'])->name('user.edit');
@@ -119,40 +97,46 @@ Route::group(['middleware' => ['auth']], function () {
 
       //Program Routings
     
-      Route::post('admin/program/updateSortorder',[ProgramController::class, 'updateSortorder']);
-      Route::post('admin/program/destroyAll',[ProgramController::class, 'destroyAll']);
-      Route::post('admin/program/updateStatus',[ProgramController::class, 'updateStatus']);
-      Route::resource('admin/program', ProgramController::class);
-  
+      Route::post('admin/product/updateSortorder',[ProductController::class, 'updateSortorder']);
+      Route::post('admin/product/destroyAll',[ProductController::class, 'destroyAll']);
+      Route::post('admin/product/updateStatus',[ProductController::class, 'updateStatus']);
+      Route::resource('admin/product', ProductController::class);
+      Route::post('admin/product/getAttributeOptions',[ProductController::class, 'getAttributeOptions']);
+     Route::post('admin/product/add-more',[ProductController::class, 'addVariation']);
       //Program Routings ends
 
-    //Subject Routings
-
-       Route::post('admin/subject/getSubjectByProgramId', [SubjectController:: class, 'getSubjectByProgramId']);
-       Route::post('admin/subject/updateSortorder', [SubjectController:: class, 'updateSortorder']);
-       Route::post('admin/subject/destroyAll', [SubjectController:: class, 'destroyAll']);
-       Route::post('admin/subject/updateStatus', [SubjectController:: class, 'updateStatus']);
-       Route::resource('admin/subject', SubjectController:: class);
-   
-    //Program Routings ends
-
-     //Topic Routings
-         
-     Route::post('admin/topic/updateSortorder', [TopicController:: class, 'updateSortorder']);
-     Route::post('admin/topic/destroyAll', [TopicController:: class, 'destroyAll']);
-     Route::post('admin/topic/updateStatus', [TopicController:: class, 'updateStatus']);
-     Route::resource('admin/topic', TopicController::class);
- 
-     //Topic Routings ends
-
-     //Master/Time-Slot Routings
     
-     Route::post('admin/time-slot/updateSortorder',[TimeSlotController:: class, 'updateSortorder']);
-     Route::post('admin/time-slot/destroyAll',[TimeSlotController:: class, 'destroyAll']);
-     Route::post('admin/time-slot/updateStatus',[TimeSlotController:: class, 'updateStatus']);
-     Route::resource('admin/time-slot', TimeSlotController::class);
+
+     //Product Category Routings
+         
+     Route::post('admin/product-category/updateSortorder', [ProductCategoryController:: class, 'updateSortorder']);
+     Route::post('admin/product-category/destroyAll', [ProductCategoryController:: class, 'destroyAll']);
+     Route::post('admin/product-category/updateStatus', [ProductCategoryController:: class, 'updateStatus']);
+     Route::resource('admin/product-category', ProductCategoryController::class);
  
-     //Master/Time-Slot  Routings ends
+     //Product Category Routings ends
+
+     //Attributes Routings
+    
+     Route::post('admin/product-attributes/updateSortorder',[ProductAttributesController:: class, 'updateSortorder']);
+     Route::post('admin/product-attributes/destroyAll',[ProductAttributesController:: class, 'destroyAll']);
+     Route::post('admin/product-attributes/updateStatus',[ProductAttributesController:: class, 'updateStatus']);
+     Route::resource('admin/product-attributes', ProductAttributesController::class);
+ 
+     //Attributes  Routings ends
+
+
+      //Attributes Routings
+    
+      Route::post('admin/attribute-options/updateSortorder',[AttributeOptionsController:: class, 'updateSortorder']);
+      Route::post('admin/attribute-options/destroyAll',[AttributeOptionsController:: class, 'destroyAll']);
+      Route::post('admin/attribute-options/updateStatus',[AttributeOptionsController:: class, 'updateStatus']);
+      Route::resource('admin/attribute-options', AttributeOptionsController::class);
+  
+      //Attributes  Routings ends
+ 
+
+
 
       //Gender Routings
     

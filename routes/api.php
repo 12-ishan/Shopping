@@ -7,6 +7,19 @@ use App\Http\Controllers\api\v1\CustomerController;
 use App\Http\Controllers\api\v1\MediaController;
 use App\Http\Controllers\api\v1\ProductCategoryController;
 
+// use Illuminate\Session\Middleware\StartSession;
+// use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+
+// use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+
+// Route::middleware([EnsureFrontendRequestsAreStateful::class])->group(function () {
+//     Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin'])
+//         ->middleware([AddQueuedCookiesToResponse::class, StartSession::class]);
+
+//     Route::middleware('auth:sanctum')->group(function () {
+//         Route::get('/v1/my-profile', [CustomerController::class, 'myProfile']);
+//     });
+// });
 
 
 /*
@@ -26,11 +39,13 @@ use App\Http\Controllers\api\v1\ProductCategoryController;
 
 //Public Api Routes
 Route::post('/v1/customer-register', [CustomerController::class, 'customerRegister']);
-Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);
+//Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);
 
 
 Route::get('/v1/product-category', [ProductCategoryController::class, 'getProductCategories']);
 Route::get('/v1/get-products/{slug}', [ProductCategoryController::class, 'getProductByCategory']);
+
+// Route::get('/v1/{slug}/{slug}', [ProductCategoryController::class, 'getSingleProduct'])->name('singleProduct');
 
 
 
@@ -42,8 +57,21 @@ Route::get('/v1/get-products/{slug}', [ProductCategoryController::class, 'getPro
 
 
 
-Route::middleware('auth:sanctum')->group( function () {
 
-    Route::get('/v1/my-profile', [CustomerController::class, 'myProfile']);
+// Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);
 
-});
+// Route::middleware('auth:sanctum')->group( function () {
+
+//     Route::get('/v1/my-profile', [CustomerController::class, 'myProfile']);
+
+// });
+
+// Route::group(['middleware' => ['api', 'session']], function () {
+//     Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);
+//     // Other routes
+//     Route::middleware('auth:sanctum')->group( function () {
+
+//         Route::get('/v1/my-profile', [CustomerController::class, 'myProfile']);
+    
+//     });
+// });
