@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\View;
 
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Support\Facades\Schema;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -21,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+         Schema::defaultStringLength(191);
+
         // You can replace 'your.route.name' with the actual name of your route
         View::composer(['admin.partials.applicationTableOrder'], function ($view) {
             if (\Route::currentRouteName() == 'application.index') {
