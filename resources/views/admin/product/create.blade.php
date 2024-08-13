@@ -368,25 +368,19 @@
                             $('#applyMessage').text('Attribute Updated Successfully');
 
                             if (attributesToRemove) {
-                                $('#productRows tr').each(function() {
-                                    Object.values(attributesToRemove).forEach(
-                                        function(
-                                            attributeId) {
-                                            console.log(attributeId);
-                                            var dropdownInRows = $(this).find(
-                                                '.attributes_' + attributeId
-                                            );
-                                            console.log('dropdown:',
-                                                dropdownInRows);
-                                            var tdToDelete = dropdownInRows
-                                                .closest('td');
-                                            console.log('td:',
-                                                tdToDelete);
-                                            tdToDelete.remove();
+                                Object.values(attributesToRemove).forEach(
+                                    function(
+                                        attributeId) {
+
+
+                                        $('select[class*="attributes_' + attributeId +
+                                            '"]').each(function() {
+                                            $(this).closest('td').remove();
                                         });
-                                });
-                            } 
-                             if (html) {
+
+                                    });
+                            }
+                            if (html) {
                                 $('#productRows tr').each(function() {
                                     $(this).find('td').eq(-1).before(html);
                                 });
