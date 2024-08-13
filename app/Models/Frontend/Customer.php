@@ -7,7 +7,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Customer extends Model
 {
-     use HasApiTokens;
+     use HasApiTokens, Notifiable;
 
     protected $table = 'customers';
 
