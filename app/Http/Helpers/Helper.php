@@ -5,7 +5,7 @@ use App\Models\Admin\Media;
 // use App\Model\Admin\Country;
 use App\Models\Admin\GlobalSetting;
 use App\Models\Admin\Setting;
-use App\Models\Admin\Gender;
+//use App\Models\Admin\productCategory;
 use App\Models\Admin\Salutation;
 use App\Models\Admin\BloodGroup;
 use App\Models\Admin\City;
@@ -147,15 +147,15 @@ if (! function_exists('getMediaName')) {
             }
     }
 }
-if (! function_exists('gender')) {
+if (! function_exists('productCategory')) {
 
-    function gender($id) {
+    function productCategory($id) {
    
-        $gender = Gender::orderBy('sortOrder')->where('id', $id)->first();
-        if (empty($gender)) {
+        $productCategory = ProductCategory::orderBy('sortOrder')->where('id', $id)->first();
+        if (empty($productCategory)) {
             return 0;
         } else {
-            return $gender->name;
+            return $productCategory->name;
         }
     }
 }

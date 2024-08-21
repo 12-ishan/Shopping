@@ -6,6 +6,7 @@ use App\Http\Controllers\api\v1\CustomerController;
 
 use App\Http\Controllers\api\v1\MediaController;
 use App\Http\Controllers\api\v1\ProductCategoryController;
+use App\Http\Controllers\api\v1\ProductDetailController;
 
 // use Illuminate\Session\Middleware\StartSession;
 // use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -45,7 +46,7 @@ Route::post('/v1/customer-register', [CustomerController::class, 'customerRegist
 Route::get('/v1/product-category', [ProductCategoryController::class, 'getProductCategories']);
 Route::get('/v1/get-products/{slug}', [ProductCategoryController::class, 'getProductByCategory']);
 
-// Route::get('/v1/{slug}/{slug}', [ProductCategoryController::class, 'getSingleProduct'])->name('singleProduct');
+Route::get('/v1/product-detail/{slug}', [ProductDetailController::class, 'fetchProductDetails']);
 
 
 

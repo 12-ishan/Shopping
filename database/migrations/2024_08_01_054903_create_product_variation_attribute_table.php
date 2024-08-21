@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('product_variation_attribute', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('product_variation_id')->nullable();
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('attributes_options_id')->nullable();
+            $table->unsignedBigInteger('attribute_id')->nullable();
             $table->tinyInteger('status');
             $table->integer('sort_order');
             $table->timestamps();

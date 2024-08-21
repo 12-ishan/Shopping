@@ -37,7 +37,9 @@ class ProductController extends Controller
     public function index()
     {
         $data = array();
-        $data["products"] = Product::orderBy('sortOrder')->get();
+        $data["products"] = Product::where('status', '!=', 2)
+        ->orderBy('sortOrder')
+        ->get();
         $data["pageTitle"] = 'Manage Product';
         $data["activeMenu"] = 'Product';
         return view('admin.product.manage')->with($data);
@@ -123,6 +125,8 @@ class ProductController extends Controller
                         $variationAttribute = new ProductVariationAttribute();
                         $variationAttribute->product_variation_id = $variant->id;
                         $variationAttribute->attributes_options_id = $attributeValueId;
+                        $variationAttribute->attribute_id = $this->getAttributeByOptionId($attributeValueId);
+                        $variationAttribute->product_id = $product->id;
                         $variationAttribute->status = 1;
                         $variationAttribute->sort_order = 1;
                         $variationAttribute->increment('sort_order');
@@ -157,17 +161,11 @@ class ProductController extends Controller
     
         $data['product'] = Product::with([
             'productAttributes.attribute.options',
-            'productVariation.attributes.attributeOption'
+            'productVariation.attributes.attributeOption', 
+            'image'
         ])->find($id);
-       // $data['index'] = $index;
-        // echo '<pre>';
-        // print_r($data['product']);
-        // die();
      
         $data['rowcount'] = ProductVariation::where('product_id', $id)->count();
-        // echo '<pre>';
-        // print_r($data['rowcount']);
-        // die();
      
         $data["productCategory"] = ProductCategory::orderBy('sortOrder')->get();
         $data["attributes"] = Attribute::orderBy('sortOrder')->get();
@@ -208,80 +206,176 @@ class ProductController extends Controller
         $product->status = 1;
         $product->save();
     
-        if ($request->input('type') == 1) {
+        if ($request->input('type') == 1 && $request->has('variation')) {
+
             $requestVariations = $request->input('variation');
-            
+        
             $requestedSkus = array_map(function($variation) {
                 return $variation['sku'];
             }, $requestVariations);
-    
+        
             $existingVariations = ProductVariation::where('product_id', $id)->get();
             $existingSkus = $existingVariations->pluck('sku')->toArray();
-    
+        
             $newSkus = array_diff($requestedSkus, $existingSkus);
             $removedSkus = array_diff($existingSkus, $requestedSkus);
+        
 
-            foreach ($requestVariations as $variation) {
-                $variationData = [
-                    'sku' => $variation['sku'],
-                    'price' => $variation['price'],
-                    'stock' => $variation['stock'],
-                    'status' => 1, 
-                    'sort_order' => ProductVariation::where('product_id', $id)->max('sort_order') + 1, 
-                ];
-    
-                $existingVariation = $existingVariations->firstWhere('sku', $variation['sku']);
-    
-                if ($existingVariation) {
-                  
-                    $existingVariation->update($variationData);
-                    
-                    if (isset($variation['attributeOptions'])) {
-                       
-                        $existingVariation->attributes()->delete();
-                     
-                        foreach ($variation['attributeOptions'] as $attribute) {
-                            ProductVariationAttribute::create([
-                                'product_variation_id' => $existingVariation->id,
-                                'attributes_options_id' => $attribute,
-                                'status' => 1, 
-                                'sort_order' => ProductVariationAttribute::where('product_variation_id', $existingVariation->id)->max('sort_order') + 1, 
-                            ]);
-                        }
-                    }
-                } else {
-                    
-                    $variationData['product_id'] = $id;
-                    $newVariation = ProductVariation::create($variationData);
-    
-                    if (isset($variation['attributeOptions'])) {
-                        foreach ($variation['attributeOptions'] as $attribute) {
-                            ProductVariationAttribute::create([
-                                'product_variation_id' => $newVariation->id,
-                                'attributes_options_id' => $attribute,
-                                'status' => 1, 
-                                'sort_order' => 1, 
-                            ]);
+            foreach ($existingSkus as $existingSku) {
+                foreach ($requestVariations as $variationToUpdate) {
+                    if ($existingSku == $variationToUpdate['sku']) {
+                        $productVariation = ProductVariation::where('product_id', $product->id)
+                            ->where('sku', $existingSku)
+                            ->first();
+        
+                        if ($productVariation) {
+                            $productVariation->price = $variationToUpdate['price'];
+                            $productVariation->stock = $variationToUpdate['stock'];
+                            $productVariation->status = 1;
+                            $productVariation->save();
+        
+                            if (isset($variationToUpdate['attributeOptions']) && is_array($variationToUpdate['attributeOptions'])) {
+
+                                
+                                ProductVariationAttribute::where('product_variation_id', $productVariation->id)->delete();
+         
+                                foreach ($variationToUpdate['attributeOptions'] as $attributesOption) {
+                                    if (!empty($attributesOption)) {  
+                                        $option = new ProductVariationAttribute();
+                                        $option->product_variation_id = $productVariation->id;
+                                        $option->product_id = $product->id;
+                                        $option->attributes_options_id = $attributesOption;
+                                        $option->status = 1;
+                                        $option->sort_order = 1;
+                                        $option->increment('sort_order');
+                                        $option->save();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-    
+        
+            foreach ($requestVariations as $variationToAdd) {
+                if (in_array($variationToAdd['sku'], $newSkus)) {
+                    $productVariation = new ProductVariation();
+                    $productVariation->product_id = $product->id;
+                    $productVariation->sku = $variationToAdd['sku'];
+                    $productVariation->price = $variationToAdd['price'];
+                    $productVariation->stock = $variationToAdd['stock'];
+                    $productVariation->status = 1;
+                    $productVariation->sort_order = 1;
+                    $productVariation->increment('sort_order');
+                    $productVariation->save();
+        
+                    if (isset($variationToAdd['attributeOptions']) && is_array($variationToAdd['attributeOptions'])) {
+                        foreach ($variationToAdd['attributeOptions'] as $attributesOption) {
+                            if (!empty($attributesOption)) {  
+                                $option = new ProductVariationAttribute();
+                                $option->product_variation_id = $productVariation->id;
+                                $option->product_id = $product->id;
+                                $option->attributes_options_id = $attributesOption;
+                                $option->attribute_id = $this->getAttributeByOptionId($attributesOption);
+                                $option->status = 1;
+                                $option->sort_order = 1;
+                                $option->increment('sort_order');
+                                $option->save();
+                            }
+                        }
+                    }
+                }
+            }
+        
             if (!empty($removedSkus)) {
-                $variationsToRemove = ProductVariation::where('product_id', $id)
-                    ->whereIn('sku', $removedSkus)
-                    ->get();
-                    
-                foreach ($variationsToRemove as $variationToRemove) {
-                    $variationToRemove->attributes()->delete(); 
-                    $variationToRemove->delete();
+                foreach ($removedSkus as $removeSku) {
+                    $productVariation = ProductVariation::where('product_id', $product->id)
+                        ->where('sku', $removeSku)
+                        ->first();
+        
+                    if ($productVariation) {
+                        
+                        ProductVariationAttribute::where('product_variation_id', $productVariation->id)->delete();
+        
+                        $productVariation->delete();
+                    }
                 }
             }
         }
-    
         return redirect()->route('product.index')->with('message', 'Product Updated Successfully');
     }
+
+    Protected function getAttributeByOptionId($optionId){
+        $option = AttributeOptions::select('attribute_id')
+        ->where('id', $optionId)
+        ->first(); 
+        return $option->attribute_id;
+    }
     
+        
+
+
+
+
+
+            // foreach ($requestVariations as $variation) {
+            //     $variationData = [
+            //         'sku' => $variation['sku'],
+            //         'price' => $variation['price'],
+            //         'stock' => $variation['stock'],
+            //         'status' => 1, 
+            //         'sort_order' => ProductVariation::where('product_id', $id)->max('sort_order') + 1, 
+            //     ];
+    
+            //     $existingVariation = $existingVariations->firstWhere('sku', $variation['sku']);
+             
+            //     if ($existingVariation) {
+                  
+            //         $existingVariation->update($variationData);
+                    
+            //         if (isset($variation['attributeOptions'])) {
+                       
+            //             $existingVariation->attributes()->delete();
+                     
+            //             foreach ($variation['attributeOptions'] as $attribute) {
+            //                 ProductVariationAttribute::create([
+            //                     'product_variation_id' => $existingVariation->id,
+            //                     'attributes_options_id' => $attribute,
+            //                     'product_id' => $product->id,
+            //                     'status' => 1, 
+            //                     'sort_order' => ProductVariationAttribute::where('product_variation_id', $existingVariation->id)->max('sort_order') + 1, 
+            //                 ]);
+            //             }
+            //         }
+            //     } else {
+                    
+            //         $variationData['product_id'] = $id;
+            //         $newVariation = ProductVariation::create($variationData);
+    
+            //         if (isset($variation['attributeOptions'])) {
+            //             foreach ($variation['attributeOptions'] as $attribute) {
+            //                 ProductVariationAttribute::create([
+            //                     'product_variation_id' => $newVariation->id,
+            //                     'attributes_options_id' => $attribute,
+            //                     'product_id' => $product->id,
+            //                     'status' => 1, 
+            //                     'sort_order' => 1, 
+            //                 ]);
+            //             }
+            //         }
+            //     }
+            // }
+    
+            // if (!empty($removedSkus)) {
+            //     $variationsToRemove = ProductVariation::where('product_id', $id)
+            //         ->whereIn('sku', $removedSkus)
+            //         ->get();
+                    
+            //     foreach ($variationsToRemove as $variationToRemove) {
+            //         $variationToRemove->attributes()->delete(); 
+            //         $variationToRemove->delete();
+            //     }
+            // }
     
     /**
      * Remove the specified resource from storage.
@@ -383,68 +477,6 @@ class ProductController extends Controller
         return response()->json($response);
     }
 
-//     public function getAttributeOptions(Request $request)
-// {
-//     $attributes = $request->input('attributes');
-    
-//     // Assuming you fetch attribute options based on the attribute IDs
-//     $attributeOptions = []; 
-
-//     foreach ($attributes as $attributeId) {
-//         $options = AttributeOptions::find($attributeId)->options; 
-//         $attributeOptions[$attributeId] = $options;
-//     }
-
-//     return response()->json([
-//         'success' => true,
-//         'attributeOptions' => $attributeOptions
-//     ]);
-// }
-
-    // public function getAttributeOptions(Request $request)
-    // {
-    // //     $attributes = $request->input('attributes', []);
-    // //    $attributeOptions = [];
-
-    //     $page = $request->input('editStatus'); //1/0
-    //     $productId = $request->input('productId');
-       
-    //     if(empty($productId) && $page == 0){
-    //         $product = new Product();
-    //         $product->name = 'temp-product';
-    //         $product->status = 0;
-    //         $product->sortOrder = 1;
-    //         $product->increment('sortOrder');
-    //         $product->save();
-    //         $productId = $product->id;
-
-    //         Session::put('TEMPPRODUCTID', $productId);
-
-          
-    //     }
-    //     $selectedAttributes = $request->input('attributes', []);
-
-    //     foreach ($selectedAttributes as $attributeId) {
-           
-    //         $attribute = new ProductAttribute();
-    //         $attribute->attribute_id = $attributeId;
-    //         $attribute->product_id = $productId;
-    //         $attribute->status = 1;
-    //         $attribute->sort_order = 1;
-    //         $attribute->increment('sort_order');
-    //         $attribute->save();
-    //     }
-
-
-    //     $response = array();
-
-    //     if($page == 0){
-    //         $response = array('page' => $page, 'selectedAttributes' => $selectedAttributes, 'productId' => $productId);
-          
-    //     }
-      
-    //     return response()->json(['success' => true, 'response' => $response]);
-    // }
     public function getAttributeOptions(Request $request)
     {
         $selectedAttributes = $request->input('attributes', []);
@@ -455,9 +487,7 @@ class ProductController extends Controller
         $prevAttributes = ProductAttribute::where('product_id', $productId)->pluck('attribute_id')->toArray();
         
         $newAttributes = array_diff($selectedAttributes, $prevAttributes);
-        // echo '<pre>';
-        // print_r($newAttributes);
-        // die();
+       
         $attributesToRemove = array_diff($prevAttributes, $selectedAttributes);
 
        // $attributesToRemove = array_values($attributesToRemove);
@@ -468,7 +498,7 @@ class ProductController extends Controller
         if (empty($productId) && $page == 0) {
             $product = new Product();
             $product->name = 'temp-product';
-            $product->status = 0;
+            $product->status = 2;
             $product->sortOrder = 1;
             $product->increment('sortOrder');
             $product->save();
@@ -476,12 +506,34 @@ class ProductController extends Controller
             $productId = $product->id;
             Session::put('TEMPPRODUCTID', $productId);
         }
-    
+
         if (!empty($attributesToRemove)) {
+            
+            $productAttributes = ProductAttribute::where('product_id', $productId)
+                ->whereIn('attribute_id', $attributesToRemove)
+                ->get();
+    
+            $attributeOptionIds = [];
+            foreach ($productAttributes as $productAttribute) {
+                $attributeOptionIds = array_merge($attributeOptionIds, $productAttribute->attributeOptions->pluck('id')->toArray());
+            }
+    
+            if (!empty($attributeOptionIds)) {
+                ProductVariationAttribute::whereIn('attributes_options_id', $attributeOptionIds)->delete();
+            }
+        
             ProductAttribute::where('product_id', $productId)
                 ->whereIn('attribute_id', $attributesToRemove)
                 ->delete();
         }
+    
+        // if (!empty($attributesToRemove)) {
+        //     ProductAttribute::where('product_id', $productId)
+        //         ->whereIn('attribute_id', $attributesToRemove)
+        //         ->delete();
+
+            
+        // }
        
         foreach ($selectedAttributes as $attributeId) {
             $exists = ProductAttribute::where('product_id', $productId)
@@ -506,9 +558,6 @@ class ProductController extends Controller
             ->get()
             ->groupBy('attribute_id')
             ->toArray();
-            // echo '<Pre>';
-            // print_r($options);
-            // die();
         
         $attributeIds = ProductAttribute::where('product_id', $productId)
             ->whereIn('attribute_id', $newAttributes)
@@ -533,54 +582,11 @@ class ProductController extends Controller
             'attributesToRemove' => array_values($attributesToRemove)
            
         ];
-        // echo '<pre>';
-        // print_r($response);
-        // die();
     
         return response()->json(['success' => true, 'response' => $response]);
     }
+
     
-    
-    
-
-
-    // public function addVariation(Request $request)
-    // {
-    //     $productId = Session::get('TEMPPRODUCTID');
-    //     $productAttributes = ProductAttribute::where('product_id', $productId)
-    //     ->orderBy('sort_order')
-    //     ->with('attribute', 'attributeOptions')
-    //     ->get();
-       
-    //     $data = [];
-    //     foreach ($productAttributes as $productAttribute) {
-    //         $attributeId = $productAttribute->attribute->id;
-    //         $attributeOptions = $productAttribute->attributeOptions;
-        
-    //         if (!isset($data[$attributeId])) {
-    //             $data[$attributeId] = [];
-    //         }
-        
-    //         foreach ($attributeOptions as $option) {
-    //             $data[$attributeId][] = [
-    //                 'id' => $option->id,
-    //                 'value' => $option->value
-    //             ];
-    //         }
-    //     }
-        
-    //     $response = [
-    //         'status' => 1,
-    //         'message' => 'Option list',
-    //         'attributeOptions' => $data 
-
-    //     ];
-
-    //     return response()->json(['success' => true, 'response' => $response]);
-
-    // }
-
-
     public function addVariation(Request $request)
     {
         // echo '<pre>';
@@ -601,11 +607,17 @@ class ProductController extends Controller
         ->orderBy('sort_order')
         ->with(['attribute', 'attributeOptions'])
         ->get();
+
+        $variationRows = ProductVariation::where('product_id', $productId)->count();
         // echo '<pre>';
-        // print_r($productAttributes);
+        // print_r($variationRows);
         // die();
-        
-        $attributeIndex = $request->input('index', 0); 
+        if ($variationRows == 1 && $page == 1) {
+            $attributeIndex = $request->input('index', $variationRows); 
+        } else {
+            $attributeIndex = $request->input('index', $variationRows);
+        }
+    
     
         $html = '
             <tr class="variation_'.$attributeIndex.'" data-index="'.$attributeIndex.'">

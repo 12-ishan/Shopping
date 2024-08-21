@@ -57,8 +57,6 @@
                                         </div>
                                     </div>
 
-
-
                                     <div class="col-6 mt-5">
                                         <div class="form-group">
                                             <label for="type">Product Type</label>
@@ -100,7 +98,7 @@
                                         <div class="form-group">
                                             <label for="image">Thumbnail</label>
                                             <input type="file" id="image" name="image" class="form-control"
-                                                value="{{ old('image', isset($product->image->name) ? $product->image->name : null) }}">
+                                                value="{{ old('image', isset($product->image->id) ? $product->image->id : null) }}">
                                         </div>
                                     </div>
 
@@ -118,8 +116,8 @@
 
 
                                 <div class="row">
-                                    <div id="productAttributesSection" style="display: none">
-                                        <div class="col-12 mt-10">
+                                    <div id="productAttributesSection" class="col-12" style="display: none">
+                                        <div class="mt-3">
                                             <span id="applyMessage"
                                                 style="color:black; background-color: #cef5d3; display: none"
                                                 class="p-2 m-2"></span>
@@ -128,7 +126,7 @@
                                                 <div class="row" id="attributesContainer">
                                                     @if (isset($attributes))
                                                         @foreach ($attributes as $attribute)
-                                                            <div class="col-md-3 col-sm-6 m-2">
+                                                            <div class="col-lg-3 col-md-4 col-sm-6 col-12 m-2">
                                                                 <div class="form-check">
                                                                     <input class="form-check-input" type="checkbox"
                                                                         name="attributes[]"
@@ -151,51 +149,43 @@
                                             <div class="col-12 mt-5 mb-3">
                                                 <button id="applyAttributesBtn" class="btn btn-primary pr-4 pl-4"
                                                     disabled>Apply Attributes</button>
-                                                <button id="addMore" class="btn btn-primary pr-4 pl-4">Add
-                                                    Row</button>
+                                                <button id="addMore" class="btn btn-primary pr-4 pl-4">Add Row</button>
                                             </div>
                                         </div>
                                     </div>
 
-
-                                    <div class="row ml-4 mr-4">
-                                        <div class="col-12 mt-5 mb-3 pt-2" id="attributeOptions"
-                                            style="{{ isset($product) ? '' : 'display: none;' }} background-color: #ddeaf7;">
+                                    <div class="row mx-3" id="variationDiv">
+                                        <div class="col-12 mt-5 mb-3 pt-2 border" id="attributeOptions"
+                                            style="{{ isset($product) ? '' : 'display: none;' }} background-color: #ddeaf7; box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.1);">
                                             <table class="table">
                                                 <tbody id="productRows" class="variation">
                                                     @if (isset($product) && $product->productVariation->isNotEmpty())
                                                         @foreach ($product->productVariation as $index => $variation)
-                                                            <tr class="variation_{{ $index }}"
-                                                                data-index={{ $index }}>
-                                                                <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
+                                                            <tr class="variation_{{ $index }}" data-index="{{ $index }}">
+                                                                <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
                                                                     <input class="form-control form-control-sm"
                                                                         name="variation[{{ $index }}][sku]"
                                                                         value="{{ $variation->sku }}"
                                                                         placeholder="Enter SKU" />
                                                                 </td>
-                                                                <td class="col-md-3 col-sm-6 p-1"
-                                                                    style="margin-right: 0;">
+                                                                <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
                                                                     <input class="form-control form-control-sm"
                                                                         name="variation[{{ $index }}][price]"
                                                                         value="{{ $variation->price }}"
                                                                         placeholder="Enter Product Price" />
                                                                 </td>
-                                                                <td class="col-md-3 col-sm-6 p-1"
-                                                                    style="margin-right: 0;">
+                                                                <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
                                                                     <input class="form-control form-control-sm"
                                                                         name="variation[{{ $index }}][stock]"
                                                                         value="{{ $variation->stock }}"
                                                                         placeholder="Enter Stock" />
                                                                 </td>
                                                                 @foreach ($product->productAttributes as $attribute)
-                                                                    <td class="col-md-3 col-sm-6 p-1"
-                                                                        style="margin-right: 0;">
+                                                                    <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
                                                                         <select
                                                                             name="variation[{{ $index }}][attributeOptions][]"
-                                                                            class="form-control form-control-sm selectpicker attributes_{{ $attribute->attribute_id }}'">
-                                                                            <option value="">Select
-                                                                                {{ $attribute->attribute->name }}
-                                                                            </option>
+                                                                            class="form-control form-control-sm selectpicker attributes_{{ $attribute->attribute_id }}">
+                                                                            <option value="">Select {{ $attribute->attribute->name }}</option>
                                                                             @foreach ($attribute->attribute->options as $option)
                                                                                 <option value="{{ $option->id }}"
                                                                                     {{ $variation->attributes->contains('attributes_options_id', $option->id) ? 'selected' : '' }}>
@@ -205,10 +195,8 @@
                                                                         </select>
                                                                     </td>
                                                                 @endforeach
-                                                                <td class="col-md-3 col-sm-6 p-1 delete-row"
-                                                                    style="margin-right: 0;">
-                                                                    <i class="fa fa-trash fa-2x delete-icon cursor-pointer"
-                                                                        aria-hidden="true"></i>
+                                                                <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1 delete-row">
+                                                                    <i class="fa fa-trash fa-2x delete-icon cursor-pointer" aria-hidden="true"></i>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -218,6 +206,7 @@
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <div class="row">
                                     <div class="col-12 mt-10">
@@ -253,9 +242,9 @@
     var editstatus = "{{ isset($editStatus) ? 1 : 0 }}";
     console.log(editstatus);
 
-    let attributeIndex = 0;
+    var attributeIndex = $('#productRows tr').length;
     // var rowcount = {{ isset($rowcount) ? $rowcount : 0 }};
-    // console.log(rowcount);
+     console.log(attributeIndex);
 
     // let attributeIndex = 0;
     // console.log(attributeIndex);
@@ -288,11 +277,11 @@
                 $("#price").focus();
                 return false;
             }
-            if ($("#image").val() == "") {
-                $("#err").text("Please select image");
-                $("#image").focus();
-                return false;
-            }
+            // if ($("#image").val() == "") {
+            //     $("#err").text("Please select image");
+            //     $("#image").focus();
+            //     return false;
+            // }
         });
 
         if ($('#type').val() == '1') {
@@ -302,8 +291,10 @@
         $('#type').on('change', function() {
             if ($(this).val() == '1') {
                 $('#productAttributesSection').show();
+                $('#variationDiv').show();
             } else {
                 $('#productAttributesSection').hide();
+                $('#variationDiv').hide();
             }
         });
 
@@ -355,7 +346,7 @@
                         var attributesToRemove = response.response.attributesToRemove;
                         console.log(attributesToRemove);
                         var index = response.response.index;
-                        // console.log(deletedAttributes);
+                         console.log(index);
                         console.log(prevAttributes);
                         console.log(newAttributes);
                         console.log(attributeOptions);
@@ -387,64 +378,6 @@
                             }
 
                             $('.selectpicker').selectpicker('refresh');
-
-                            // deletedAttributes.forEach(attributeId => {
-                            //     console.log(attributeId);
-
-                            //     $('#productRows tr').each(function() {
-                            //         console.log(this);
-
-                            //         $(this).find(
-                            //                 `.attributes_${attributeId}`)
-                            //             .closest(
-                            //                 `td .attributes_${attributeId}`
-                            //             ).remove();
-                            //         console.log(this);
-
-                            //     });
-                            // });
-
-
-                            // console.log('1', newAttributes);
-                            // newAttributes.forEach(attributeId => {
-                            //     $('#productRows tr').each(function() {
-
-                            //         var html =
-                            //             '<td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">';
-                            //         html +=
-                            //             `<select name="variation[][attributeOptions][]" class="form-control form-control-sm selectpicker attributes_${attributeId}">`;
-                            //         html +=
-                            //             '<option value="">Select Option</option>';
-
-                            //         if (attributeOptions[attributeId]) {
-                            //             attributeOptions[attributeId]
-                            //                 .forEach(
-                            //                     optionGroup => {
-                            //                         optionGroup
-                            //                             .attribute_options
-                            //                             .forEach(option => {
-                            //                                 html +=
-                            //                                     '<option value="' +
-                            //                                     option
-                            //                                     .id +
-                            //                                     '">' +
-                            //                                     option
-                            //                                     .value +
-                            //                                     '</option>';
-                            //                             });
-                            //                     });
-                            //         }
-
-                            //         html += '</select>';
-                            //         html += '</td>';
-                            //         $(this).append(html);
-                            //         $('.selectpicker').selectpicker(
-                            //             'refresh');
-
-                            //     });
-
-                            // });
-
 
                         }
                     }
@@ -479,6 +412,7 @@
                         $('#attributeOptions').show();
 
                         attributeIndex = response.response.index;
+                        console.log(attributeIndex);
                     } else {
                         console.error('Failed to fetch attribute options.');
                     }
@@ -492,107 +426,6 @@
             $(this).closest('tr').remove();
         });
 
-        // function addDropdown(attributeOptions, attributeId) {
-        //         var newDropdown = '<td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;" data-attribute-id="' + attributeId + '">';
-        //         newDropdown += '<select name="variation[' + attributeIndex + '][attributeOptions][]" class="form-control form-control-sm selectpicker">';
-        //         newDropdown += '<option value="">Select Option</option>';
-        //         attributeOptions.forEach(function(option) {
-        //             newDropdown += '<option value="' + option.id + '">' + option.value + '</option>';
-        //         });
-        //         newDropdown += '</select>';
-        //         newDropdown += '</td>';
-
-        //         $('#attributesContainer').append(newDropdown);
-        //         attributeIndex++; // Increment attribute index
-        //     }
-
-        // $('#addMore').on('click', function(event) {
-        //     event.preventDefault();
-
-        //     var page = "add";
-
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: '/admin/product/add-more',
-        //         data: {
-        //             page: page,
-
-        //         },
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         },
-        //         success: function(response) {
-        //             if (response.success) {
-        //                 var attributeOptions = response.response.attributeOptions;
-
-
-        //                 $('#attributeOptions').show();
-        //                 addAttributeRow(attributeOptions);
-
-        //             } else {
-        //                 console.log(response.message);
-        //             }
-        //         },
-        //         error: function(error) {
-        //             console.error(error);
-        //         }
-        //     });
-        // });
-
-        // $(document).on('click', '.delete-icon', function() {
-        //     $(this).closest('tr').remove();
-        // });
-
-        // function addAttributeRow(attributeOptions) {
-        //     var html = `
-        //         <tr>
-        //             <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
-        //                 <input class="form-control form-control-sm" name="variation[${attributeIndex}][sku]" placeholder="Enter SKU"/>
-        //             </td>
-        //             <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
-        //                 <input class="form-control form-control-sm" name="variation[${attributeIndex}][price]" placeholder="Enter Product Price"/>
-        //             </td>
-        //             <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
-        //                 <input class="form-control form-control-sm" name="variation[${attributeIndex}][stock]" placeholder="Enter Stock"/>
-        //             </td>
-        //     `;
-
-        //     console.log("msg", attributeOptions);
-        //     Object.entries(attributeOptions).forEach(([attribute, options]) => {
-        //         console.log("msg1", options);
-        //         if (options) {
-        //             html += `
-        //                 <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
-        //                     <select name="variation[${attributeIndex}][attributeOptions][]" class="form-control form-control-sm selectpicker">
-        //                         <option value="">Select Option</option>
-        //             `;
-
-        //             options.forEach(function(option) {
-        //                 html += `<option value="${option.id}">${option.value}</option>`;
-        //             });
-
-        //             html += `
-        //                     </select>
-        //                 </td>
-        //             `;
-        //         }
-        //     });
-
-        //     html += `
-        //         <td class="col-md-3 col-sm-6 p-1 delete-row" style="margin-right: 0;">
-        //             <i class="fa fa-trash fa-2x delete-icon cursor-pointer" aria-hidden="true"></i>
-        //         </td>
-        //     </tr>
-        //     `;
-
-        //     $('#productRows').append(html);
-
-        //     $('.selectpicker').selectpicker('refresh');
-
-        //     console.log('Final HTML:', html);
-
-        //    attributeIndex++;  
-        // }
     });
 </script>
 

@@ -25,6 +25,6 @@ class ProductVariation extends Model
 
     public function variationAttribute()
     {
-        return $this->hasMany(ProductVariationAttribute::class);
+        return $this->hasMany(ProductVariationAttribute::class, 'product_variation_id');
     }
 }

@@ -67,14 +67,14 @@ class ProductCategoryController extends Controller
             $response = [
                 'message' => 'Product not found',
                 'status' => '0',
-                'products' => []
             ];
         } else {
             $response = [
                 'message' => 'Products exist',
                 'status' => '1',
                 'products' => $data,
-                'categoryName' => $category->name
+                'categoryName' => $category->name,
+                'categorySlug' => $category->slug
             ];
         }
     }

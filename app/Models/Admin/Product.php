@@ -30,7 +30,7 @@ class Product extends Model
 
     public function attributeOptions()
     {
-        return $this->hasManyThrough(AttributeOption::class, ProductAttribute::class, 'product_id', 'attribute_id', 'id', 'attribute_id');
+        return $this->hasManyThrough(AttributeOptions::class, ProductAttribute::class, 'product_id', 'attribute_id', 'id', 'attribute_id');
     }
         
 }
