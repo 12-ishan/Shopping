@@ -115,24 +115,28 @@ public function customerRegister(Request $request)
     
     public function myProfile(Request $request)
     {
-        // // echo '<pre>';
-        // // print_r($request->all());
-        // // die();
-        // // Access the token from the cookie
-        // $token = $request->cookie('sanctum_token');
-        // // echo '<pre>';
-        // // print_r($token);
-        // // die();
+       
 
-        // // Log the token
-        // \Log::info('Sanctum Token: ' . $token);
+        $user = Auth::user();
 
         return response()->json([
             'message' => 'my profile',
             'status' => '1',
-           // 'token' => $token
+            'user' => $user, // Include the authenticated user's information
         ], 200);
     }
+
+
+    public function logout(Request $request)
+{
+    // Revoke the token that was used to authenticate the current request
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json([
+        'message' => 'Logged out successfully',
+        'status' => '1',
+    ], 200);
+}
   
     // public function customerLogin(Request $request)
     // {
