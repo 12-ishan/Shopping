@@ -63,8 +63,6 @@ public function customerRegister(Request $request)
 }
 
    
-
-   
     public function customerLogin(Request $request)
     {
        
@@ -82,42 +80,22 @@ public function customerRegister(Request $request)
         $credentials = $request->only('email', 'password');
        
         if (Auth::guard('customer')->attempt($credentials)) {
+            
             $request->session()->regenerate();
-    
             $customer = Auth::guard('customer')->user();
-            // echo '<pre>';
-            // print_r($customer);
-            // die();
-    
+        
             if ($customer->status == 1) {
-                // Generate a token
-               // $token = $customer->createToken('Personal Access Token')->plainTextToken;
-    
+               
                $token = $customer->createToken('auth_token')->plainTextToken;
-            //    echo '<pre>';
-            //    print_r($token);
-            //    die();
-
+        
                 \Log::info('Generated Token: ' . $token);
-    
-                // Set the token as an HttpOnly cookie
-               // $cookie = cookie('token', $token, 60, '/', null, false, true);
-            //    $cookie = cookie('sanctum_token', $token, 60 * 24, '/', null, false, true, false, 'None');
-
-             //  \Log::info('Token: ' . $cookie);
     
                 return response()->json([
                     'message' => 'Login successful',
-                    'status' => '1'
-                  // 'access_token' => $token, 'token_type' => 'Bearer'
-                ])->withCookie(
-                    cookie('sanctum_token', $token, 60 * 24, null, null, true, true, false, 'None')
-                );
-
-                // return response()->json(['message' => 'Login successful.'])
-                // ->cookie('laravel_session', $request->session()->getId(), 60, null, null, false, true);
-        
-
+                    'status' => '1',
+                    'token' => $token,
+                ]);
+              
             } else {
                 // Log out if account is inactive
                 Auth::guard('customer')->logout();
@@ -224,4 +202,3 @@ public function customerRegister(Request $request)
 
    
    
-
