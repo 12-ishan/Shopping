@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('imageId')->nullable();
             $table->tinyInteger('status');
             $table->integer('sortOrder');
-            $table->timestamps();
+            $table->timestamps(); 
            
         });
     }
