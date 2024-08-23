@@ -160,148 +160,18 @@ if (! function_exists('productCategory')) {
     }
 }
 
-if (! function_exists('bloodGroup')) {
 
-    function bloodGroup($id) {
-   
-        $bloodGroup = BloodGroup::orderBy('sortOrder')->where('id', $id)->first();
-        if (empty($bloodGroup)) {
-            return 0;
-        } else {
-            return $bloodGroup->name;
-        }
-    }
-}
 
-if (! function_exists('city')) {
 
-    function city($id) {
-   
-        $city = City::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($city)) {
-            return 0;
-        } else {
-            return $city->name;
-        }
-    }
-}
 
-if (! function_exists('state')) {
 
-    function state($id) {
-   
-        $state = State::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($state)) {
-            return 0;
-        } else {
-            return $state->name;
-        }
-    }
-}
 
-if (! function_exists('salutation')) {
 
-    function salutation($id) {
-   
-        $salutation = Salutation::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($salutation)) {
-            return 0;
-        } else {
-            return $salutation->name;
-        }
-    }
-}
 
-if (! function_exists('university')) {
 
-    function university($id) {
-   
-        $university = University::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($university)) {
-            return 0;
-        } else {
-            return $university->name;
-        }
-    }
-}
 
-if (! function_exists('degree')) {
 
-    function degree($id) {
-   
-        $degree = Degree::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($degree)) {
-            return 0;
-        } else {
-            return $degree->name;
-        }
-    }
-}
 
-if (! function_exists('mode')) {
-
-    function mode($id) {
-   
-        $mode = Mode::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($mode)) {
-            return 0;
-        } else {
-            return $mode->name;
-        }
-    }
-}
-
-if (! function_exists('board')) {
-
-    function board($id) {
-   
-        $board = Board::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($board)) {
-            return 0;
-        } else {
-            return $board->name;
-        }
-    }
-}
-
-if (! function_exists('stream')) {
-
-    function stream($id) {
-   
-        $stream = Stream::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($stream)) {
-            return 0;
-        } else {
-            return $stream->name;
-        }
-    }
-}
-
-if (! function_exists('awardLevel')) {
-
-    function awardLevel($id) {
-   
-        $awardLevel = AwardsLevel::orderBy('sortOrder')->where('id', $id)->first();
-        if (empty($awardLevel)) {
-            return 0;
-        } else {
-            return $awardLevel->name;
-        }
-    }
-}
-
-if (! function_exists('proficiencyLevel')) {
-
-    function proficiencyLevel($id) {
-   
-        $proficiencyLevel = ProficiencyLevel::orderBy('sort_order')->where('id', $id)->first();
-        if (empty($proficiencyLevel)) {
-            return 0;
-        } else {
-            return $proficiencyLevel->name;
-        }
-    }
-}
 
 
 

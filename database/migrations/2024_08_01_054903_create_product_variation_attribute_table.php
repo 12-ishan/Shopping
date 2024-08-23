@@ -20,6 +20,9 @@ return new class extends Migration
             $table->tinyInteger('status');
             $table->integer('sort_order');
             $table->timestamps();
+            $table->foreign('product_id')
+            ->references('id')->on('product')
+            ->onDelete('cascade');
         });
     }
 

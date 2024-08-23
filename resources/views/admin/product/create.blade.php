@@ -83,8 +83,6 @@
                                         </div>
                                     </div>
 
-
-
                                     <div class="col-6 mt-5">
                                         <div class="form-group">
                                             <label for="price">Base Price</label>
@@ -155,18 +153,20 @@
                                     </div>
 
                                     <div class="row mx-3" id="variationDiv">
-                                        <div class="col-12 mt-5 mb-3 pt-2 border" id="attributeOptions"
-                                            style="{{ isset($product) ? '' : 'display: none;' }} background-color: #ddeaf7; box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.1);">
+                                        <p id="sku-err" style="color:red;"></p>
+                                        <div class="col-12 mt-5 mb-3 pt-2" id="attributeOptions"
+                                            style="{{ isset($product) && $product->type !== 0 ? '' : 'display: none;' }} background-color: #ddeaf7; box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.1);">
                                             <table class="table">
                                                 <tbody id="productRows" class="variation">
                                                     @if (isset($product) && $product->productVariation->isNotEmpty())
                                                         @foreach ($product->productVariation as $index => $variation)
                                                             <tr class="variation_{{ $index }}" data-index="{{ $index }}">
                                                                 <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
-                                                                    <input class="form-control form-control-sm"
+                                                                    <input class="form-control form-control-sm sku-fields"
                                                                         name="variation[{{ $index }}][sku]"
                                                                         value="{{ $variation->sku }}"
-                                                                        placeholder="Enter SKU" />
+                                                                        placeholder="Enter SKU"
+                                                                        readonly  />
                                                                 </td>
                                                                 <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
                                                                     <input class="form-control form-control-sm"
@@ -204,6 +204,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                       
                                     </div>
                                 </div>
 
@@ -243,20 +244,8 @@
     console.log(editstatus);
 
     var attributeIndex = $('#productRows tr').length;
-    // var rowcount = {{ isset($rowcount) ? $rowcount : 0 }};
      console.log(attributeIndex);
-
-    // let attributeIndex = 0;
-    // console.log(attributeIndex);
-    // if (editstatus == 1) {
-    //     attributeIndex = rowcount;
-    //     console.log(attributeIndex);
-
-    // } else {
-    //     attributeIndex = 0;
-    //     console.log(attributeIndex);
-
-    // }
+   
 
     $(document).ready(function() {
 
@@ -277,7 +266,14 @@
                 $("#price").focus();
                 return false;
             }
-            // if ($("#image").val() == "") {
+            // if ($('#type').val() === '1') {
+            //     if ($(".sku-fields").val() === "") {
+            //         $("#sku-err").text("Please enter product SKU");
+            //         $(".sku-fields").first().focus();
+                  
+            //     }
+            // }
+ // if ($("#image").val() == "") {
             //     $("#err").text("Please select image");
             //     $("#image").focus();
             //     return false;
@@ -309,6 +305,15 @@
 
         $('#applyAttributesBtn').on('click', function(event) {
             event.preventDefault();
+
+            var rowIndices = [];
+
+            $('#productRows tr').each(function() {
+                var rowIndex = $(this).data('index');
+                console.log('Row Data-Index:', rowIndex);
+
+                rowIndices.push(rowIndex);
+            });
 
             $(this).prop('disabled', true);
             // $('#addMore').prop('disabled', false);

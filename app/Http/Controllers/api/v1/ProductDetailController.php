@@ -48,9 +48,6 @@ class ProductDetailController extends Controller
     if($product->type == 1){
         $productVariation = [];
         $i = 0;
-        // echo '<pre>';
-        // print_r($product->productVariation);
-        // die();
         
         foreach ($product->productVariation as $variation) {
             
@@ -78,32 +75,26 @@ class ProductDetailController extends Controller
 
     foreach ($attributes as $index => $productAttribute) {
         $attribute = $this->getProductAttributeById($productAttribute->attribute_id);
-    //     echo '<pre>';
-    //    print_r($attribute);
-    //    die();
-        
+   
        // $attributeOptions = $productAttribute->attribute->options()->get();
        $attributeOptions = ProductVariationAttribute::where('attribute_id', $productAttribute->attribute_id)
     ->where('product_id', $product->id)
     ->get();
 
-$options = [];
-$existingOptionIds = []; // Array to track existing option IDs
+    $options = [];
+    $existingOptionIds = []; 
 
-foreach ($attributeOptions as $option) {
-    $optionId = $option->attributeOption->id;
+    foreach ($attributeOptions as $option) {
+        $optionId = $option->attributeOption->id;
 
-    // Check if the option ID already exists in the array
-    if (!in_array($optionId, $existingOptionIds)) {
-        $options[] = [
-            'option_id' => $optionId,
-            'option_value' => $option->attributeOption->value,
-        ];
-        $existingOptionIds[] = $optionId; // Add the option ID to the tracking array
+        if (!in_array($optionId, $existingOptionIds)) {
+            $options[] = [
+                'option_id' => $optionId,
+                'option_value' => $option->attributeOption->value,
+            ];
+            $existingOptionIds[] = $optionId; 
+        }
     }
-}
-
-
         $productAttributes[$index] = [
             'attribute_id' => $productAttribute->attribute_id,
             'attribute_name' => $attribute->name,
@@ -118,19 +109,13 @@ foreach ($attributeOptions as $option) {
     return response()->json($response, 200);
 }
 
-protected function findMaxPriceByProductId($productId){
-    return ProductVariation::where('product_id', $productId)->max('price');
-}
+    protected function findMaxPriceByProductId($productId)
+    {
+        return ProductVariation::where('product_id', $productId)->max('price');
+    }
 
-protected function getProductAttributeById($id)
-{
-        return Attribute::find($id);
+    protected function getProductAttributeById($id)
+    {
+            return Attribute::find($id);
+    }
 }
-}
-// $productVariationAttribute = ProductVariationAttribute::where('product_id', $product->id)->where('product_varia', $productAttribute->attribute_id)->get();
-                // foreach($productVariationAttribute as $pva){
-                //     $productAttributes[$i]['available_options'][] = [
-                //           'attribute_id' => $pva->id,
-                //           'attributes_options_id' => $pva->attributes_options_id
-                //     ];
-                // }

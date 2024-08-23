@@ -13,7 +13,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
        $this->call([
-        GlobalSettingSeeder::class
+        ProductCategoriesSeeder::class,
+        AttributesSeeder::class,
+        AttributesOptionsSeeder::class
        ]);
     }
 }

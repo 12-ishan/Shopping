@@ -14,6 +14,7 @@ use App\Models\Admin\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Session;
+//use App\Http\Requests\StoreProductRequest;
 
 
 class ProductController extends Controller
@@ -29,11 +30,7 @@ class ProductController extends Controller
         });
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function index()
     {
         $data = array();
@@ -45,41 +42,41 @@ class ProductController extends Controller
         return view('admin.product.manage')->with($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
         $data = array();
 
         $data["productCategory"] = ProductCategory::where('status',1)->orderBy('sortOrder')->get();
-        // $data["editStatus"] = 0;
-       // $data['product'] = null;
-       // $data["editStatus"] = 0;
         $data['attributes'] = Attribute::where('status', 1)->orderBy('sortOrder')->get();
         $data["pageTitle"] = 'Add Product';
         $data["activeMenu"] = 'Product';
         return view('admin.product.create')->with($data);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     { 
-        // echo '<pre>';
-        // print_r($request->all());
-        // die();
-        $this->validate($request, [
+        $this->validate(request(), [
             'name' => 'required',
+            'category' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required'
         ]);
+
+        // $rules = [
+        //     'name' => 'required',
+        //     'price' => 'required',
+        //     'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        // ];
+
+        // if ($request->input('type') == 1) {
+        //     $rules['sku'] = 'required|unique:product_variations,sku';
+        // }
+
+        // $validatedData = $request->validate($rules, [
+        //     'sku.required' => 'Please enter the SKU.',
+        //     'sku.unique' => 'The SKU has already been taken. Please choose a different one.',
+        // ]);
+
     
         if (session()->has('TEMPPRODUCTID') && $request->input('type') == 1) {
             $checkProduct = session('TEMPPRODUCTID');
@@ -140,21 +137,6 @@ class ProductController extends Controller
     }
     
     
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     { 
         $data = array();
@@ -164,6 +146,18 @@ class ProductController extends Controller
             'productVariation.attributes.attributeOption', 
             'image'
         ])->find($id);
+        // $data['product'] = Product::with([
+        //     'productAttributes' => function ($query) {
+        //         $query->orderBy('sort_order'); 
+        //     },
+        //     'productAttributes.attribute.options', 
+        //     'productVariation' => function ($query) {
+        //         $query->where('status', '!=', 2);
+        //     },
+        //     'productVariation.attributes.attributeOption', 
+        //     'image'
+        // ])->find($id);
+        
      
         $data['rowcount'] = ProductVariation::where('product_id', $id)->count();
      
@@ -176,20 +170,21 @@ class ProductController extends Controller
     }
     
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required',
-        ]);
+        // $rules = [
+        //     'name' => 'required',
+        //     'price' => 'required',
+        //     'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        // ];
+        // if ($request->input('type') == 1) {
+        //     $rules['sku'] = 'required|unique:product_variation,sku';
+        // }
+        // $validatedData = $request->validate($rules, [
+        //     'sku.required' => 'Please enter the SKU.',
+        //     'sku.unique' => 'The SKU has already been taken. Please choose a different one.',
+        // ]);
+        
     
         $product = Product::find($id);
     
@@ -201,6 +196,7 @@ class ProductController extends Controller
         $product->category_id = $request->input('categoryId');
         $product->name = $request->input('name');
         $product->slug = Str::slug($request->input('name'));
+        $product->type = $request->input('type');
         $product->price = $request->input('price');
         $product->description = $request->input('description');
         $product->status = 1;
@@ -218,6 +214,7 @@ class ProductController extends Controller
             $existingSkus = $existingVariations->pluck('sku')->toArray();
         
             $newSkus = array_diff($requestedSkus, $existingSkus);
+            
             $removedSkus = array_diff($existingSkus, $requestedSkus);
         
 
@@ -236,8 +233,7 @@ class ProductController extends Controller
         
                             if (isset($variationToUpdate['attributeOptions']) && is_array($variationToUpdate['attributeOptions'])) {
 
-                                
-                                ProductVariationAttribute::where('product_variation_id', $productVariation->id)->delete();
+                                 ProductVariationAttribute::where('product_variation_id', $productVariation->id)->delete();
          
                                 foreach ($variationToUpdate['attributeOptions'] as $attributesOption) {
                                     if (!empty($attributesOption)) {  
@@ -245,6 +241,7 @@ class ProductController extends Controller
                                         $option->product_variation_id = $productVariation->id;
                                         $option->product_id = $product->id;
                                         $option->attributes_options_id = $attributesOption;
+                                        $option->attribute_id = $this->getAttributeByOptionId($attributesOption);
                                         $option->status = 1;
                                         $option->sort_order = 1;
                                         $option->increment('sort_order');
@@ -259,6 +256,7 @@ class ProductController extends Controller
         
             foreach ($requestVariations as $variationToAdd) {
                 if (in_array($variationToAdd['sku'], $newSkus)) {
+              
                     $productVariation = new ProductVariation();
                     $productVariation->product_id = $product->id;
                     $productVariation->sku = $variationToAdd['sku'];
@@ -295,9 +293,9 @@ class ProductController extends Controller
         
                     if ($productVariation) {
                         
-                        ProductVariationAttribute::where('product_variation_id', $productVariation->id)->delete();
-        
-                        $productVariation->delete();
+                        ProductVariationAttribute::where('product_variation_id', $productVariation->id)->update(['status' => 2]);
+
+                        $productVariation->update(['status' => 2]);
                     }
                 }
             }
@@ -305,84 +303,15 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('message', 'Product Updated Successfully');
     }
 
-    Protected function getAttributeByOptionId($optionId){
+    Protected function getAttributeByOptionId($optionId)
+    {
         $option = AttributeOptions::select('attribute_id')
         ->where('id', $optionId)
         ->first(); 
         return $option->attribute_id;
     }
     
-        
 
-
-
-
-
-            // foreach ($requestVariations as $variation) {
-            //     $variationData = [
-            //         'sku' => $variation['sku'],
-            //         'price' => $variation['price'],
-            //         'stock' => $variation['stock'],
-            //         'status' => 1, 
-            //         'sort_order' => ProductVariation::where('product_id', $id)->max('sort_order') + 1, 
-            //     ];
-    
-            //     $existingVariation = $existingVariations->firstWhere('sku', $variation['sku']);
-             
-            //     if ($existingVariation) {
-                  
-            //         $existingVariation->update($variationData);
-                    
-            //         if (isset($variation['attributeOptions'])) {
-                       
-            //             $existingVariation->attributes()->delete();
-                     
-            //             foreach ($variation['attributeOptions'] as $attribute) {
-            //                 ProductVariationAttribute::create([
-            //                     'product_variation_id' => $existingVariation->id,
-            //                     'attributes_options_id' => $attribute,
-            //                     'product_id' => $product->id,
-            //                     'status' => 1, 
-            //                     'sort_order' => ProductVariationAttribute::where('product_variation_id', $existingVariation->id)->max('sort_order') + 1, 
-            //                 ]);
-            //             }
-            //         }
-            //     } else {
-                    
-            //         $variationData['product_id'] = $id;
-            //         $newVariation = ProductVariation::create($variationData);
-    
-            //         if (isset($variation['attributeOptions'])) {
-            //             foreach ($variation['attributeOptions'] as $attribute) {
-            //                 ProductVariationAttribute::create([
-            //                     'product_variation_id' => $newVariation->id,
-            //                     'attributes_options_id' => $attribute,
-            //                     'product_id' => $product->id,
-            //                     'status' => 1, 
-            //                     'sort_order' => 1, 
-            //                 ]);
-            //             }
-            //         }
-            //     }
-            // }
-    
-            // if (!empty($removedSkus)) {
-            //     $variationsToRemove = ProductVariation::where('product_id', $id)
-            //         ->whereIn('sku', $removedSkus)
-            //         ->get();
-                    
-            //     foreach ($variationsToRemove as $variationToRemove) {
-            //         $variationToRemove->attributes()->delete(); 
-            //         $variationToRemove->delete();
-            //     }
-            // }
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         $id = $request->id;
@@ -396,15 +325,8 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Remove all selected resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function destroyAll(Request $request)
     {
-
         $record = $request->input('deleterecords');
 
         if (isset($record) && !empty($record)) {
@@ -422,12 +344,7 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Update SortOrder.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function updateSortorder(Request $request)
     {
         $data = $request->records;
@@ -453,12 +370,6 @@ class ProductController extends Controller
         return response()->json($response);
     }
 
-    /**
-     * Update Status resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function updateStatus(Request $request)
     {
         $status = $request->status;
@@ -491,9 +402,6 @@ class ProductController extends Controller
         $attributesToRemove = array_diff($prevAttributes, $selectedAttributes);
 
        // $attributesToRemove = array_values($attributesToRemove);
-        // echo '<pre>';
-        // print_r($attributesToRemove);
-        // die();
         
         if (empty($productId) && $page == 0) {
             $product = new Product();
@@ -526,14 +434,6 @@ class ProductController extends Controller
                 ->whereIn('attribute_id', $attributesToRemove)
                 ->delete();
         }
-    
-        // if (!empty($attributesToRemove)) {
-        //     ProductAttribute::where('product_id', $productId)
-        //         ->whereIn('attribute_id', $attributesToRemove)
-        //         ->delete();
-
-            
-        // }
        
         foreach ($selectedAttributes as $attributeId) {
             $exists = ProductAttribute::where('product_id', $productId)
@@ -589,9 +489,6 @@ class ProductController extends Controller
     
     public function addVariation(Request $request)
     {
-        // echo '<pre>';
-        // print_r($request->all());
-        // die();
        $productId = Session::get('TEMPPRODUCTID');
 
        $page = $request->input('editStatus');
@@ -599,19 +496,14 @@ class ProductController extends Controller
        if($page == 1){
        $productId = $request->input('productId');
        }
-        // echo '<pre>';
-        // print_r($productId);
-        // die();
-      
+
         $productAttributes = ProductAttribute::where('product_id', $productId)
-        ->orderBy('sort_order')
+        //->orderBy('sort_order')
         ->with(['attribute', 'attributeOptions'])
         ->get();
-
+   
         $variationRows = ProductVariation::where('product_id', $productId)->count();
-        // echo '<pre>';
-        // print_r($variationRows);
-        // die();
+      
         if ($variationRows == 1 && $page == 1) {
             $attributeIndex = $request->input('index', $variationRows); 
         } else {
@@ -622,7 +514,7 @@ class ProductController extends Controller
         $html = '
             <tr class="variation_'.$attributeIndex.'" data-index="'.$attributeIndex.'">
                 <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
-                    <input class="form-control form-control-sm" name="variation['.$attributeIndex.'][sku]" placeholder="Enter SKU"/>
+                    <input class="form-control form-control-sm sku-fields" name="variation['.$attributeIndex.'][sku]" placeholder="Enter SKU"/>
                 </td>
                 <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
                     <input class="form-control form-control-sm" name="variation['.$attributeIndex.'][price]" placeholder="Enter Product Price"/>
@@ -633,9 +525,7 @@ class ProductController extends Controller
     
         foreach ($productAttributes as $productAttribute) {
             $attributeOptions = $productAttribute->attributeOptions;
-            // echo '<pre>';
-            // print_r($attributeOptions);
-            // die();
+           
             $attributeName = $productAttribute->attribute;
     
             if ($attributeOptions->isNotEmpty()) {
@@ -688,7 +578,7 @@ class ProductController extends Controller
 
             $html .= '</select>';
             $html .= '</td>';
-            $index++;
+           // $index++;
         }
         return $html;
     }
