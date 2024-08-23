@@ -58,7 +58,7 @@ class ProductController extends Controller
     { 
         $this->validate(request(), [
             'name' => 'required',
-            'category' => 'required',
+            'categoryId' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -514,7 +514,7 @@ class ProductController extends Controller
         $html = '
             <tr class="variation_'.$attributeIndex.'" data-index="'.$attributeIndex.'">
                 <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
-                    <input class="form-control form-control-sm sku-fields" name="variation['.$attributeIndex.'][sku]" placeholder="Enter SKU"/>
+                    <input class="form-control form-control-sm sku-fields" value="" name="variation['.$attributeIndex.'][sku]" placeholder="Enter SKU"/>
                 </td>
                 <td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">
                     <input class="form-control form-control-sm" name="variation['.$attributeIndex.'][price]" placeholder="Enter Product Price"/>
