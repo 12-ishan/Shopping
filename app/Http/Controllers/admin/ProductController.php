@@ -560,12 +560,13 @@ class ProductController extends Controller
     }
     
 
-    private function addAttributesdropdowns($newAttributes, $options, $index)
+    private function addAttributesdropdowns($newAttributes, $options)
     {
+        
         $html = '';
         foreach ($newAttributes as $attributeId) {
             $html .= '<td class="col-md-3 col-sm-6 p-1" style="margin-right: 0;">';
-            $html .= '<select name="variation['.$index.'][attributeOptions][]" class="form-control form-control-sm selectpicker attributes_'.$attributeId.'">';
+            $html .= '<select data-attribute-id="'.$attributeId.'" class="form-control form-control-sm selectpicker attributes_'.$attributeId.'">';
             $html .= '<option value="">Select '.$options[$attributeId][0]['attribute']['name'].'</option>';
             
             if (isset($options[$attributeId])) {
@@ -582,6 +583,6 @@ class ProductController extends Controller
         }
         return $html;
     }
-
+    
 
 }
