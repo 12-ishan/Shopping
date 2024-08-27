@@ -46,7 +46,7 @@ Route::post('/v1/customer-register', [CustomerController::class, 'customerRegist
 Route::get('/v1/product-category', [ProductCategoryController::class, 'getProductCategories']);
 Route::get('/v1/get-products/{slug}', [ProductCategoryController::class, 'getProductByCategory']);
 
-Route::get('/v1/product-detail/{slug}', [ProductDetailController::class, 'fetchProductDetails']);
+Route::get('/v1/product-detail/{categorySlug}/{productSlug}', [ProductDetailController::class, 'fetchProductDetails']);
 
 
 

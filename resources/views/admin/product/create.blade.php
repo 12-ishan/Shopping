@@ -160,13 +160,13 @@
                                                 <tbody id="productRows" class="variation">
                                                     @if (isset($product) && $product->productVariation->isNotEmpty())
                                                         @foreach ($product->productVariation as $index => $variation)
-                                                            <tr class="variation_{{ $index }}" data-index="{{ $index }}">
+                                                            <tr class="variation_{{ $index }}"
+                                                                data-index="{{ $index }}">
                                                                 <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
                                                                     <input class="form-control form-control-sm sku-fields"
                                                                         name="variation[{{ $index }}][sku]"
                                                                         value="{{ $variation->sku }}"
-                                                                        placeholder="Enter SKU"
-                                                                        readonly  />
+                                                                        placeholder="Enter SKU" readonly />
                                                                 </td>
                                                                 <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1">
                                                                     <input class="form-control form-control-sm"
@@ -185,7 +185,8 @@
                                                                         <select
                                                                             name="variation[{{ $index }}][attributeOptions][]"
                                                                             class="form-control form-control-sm selectpicker attributes_{{ $attribute->attribute_id }}">
-                                                                            <option value="">Select {{ $attribute->attribute->name }}</option>
+                                                                            <option value="">Select
+                                                                                {{ $attribute->attribute->name }}</option>
                                                                             @foreach ($attribute->attribute->options as $option)
                                                                                 <option value="{{ $option->id }}"
                                                                                     {{ $variation->attributes->contains('attributes_options_id', $option->id) ? 'selected' : '' }}>
@@ -195,8 +196,10 @@
                                                                         </select>
                                                                     </td>
                                                                 @endforeach
-                                                                <td class="col-lg-3 col-md-4 col-sm-6 col-12 p-1 delete-row">
-                                                                    <i class="fa fa-trash fa-2x delete-icon cursor-pointer" aria-hidden="true"></i>
+                                                                <td
+                                                                    class="col-lg-3 col-md-4 col-sm-6 col-12 p-1 delete-row">
+                                                                    <i class="fa fa-trash fa-2x delete-icon cursor-pointer"
+                                                                        aria-hidden="true"></i>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -204,7 +207,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                       
+
                                     </div>
                                 </div>
 
@@ -244,8 +247,8 @@
     console.log(editstatus);
 
     var attributeIndex = $('#productRows tr').length;
-     console.log(attributeIndex);
-   
+    console.log(attributeIndex);
+
 
     $(document).ready(function() {
 
@@ -270,10 +273,10 @@
             //     if ($(".sku-fields").val() === "") {
             //         $("#sku-err").text("Please enter product SKU");
             //         $(".sku-fields").first().focus();
-                  
+
             //     }
             // }
- // if ($("#image").val() == "") {
+            // if ($("#image").val() == "") {
             //     $("#err").text("Please select image");
             //     $("#image").focus();
             //     return false;
@@ -310,7 +313,7 @@
 
             $('#productRows tr').each(function() {
                 var rowIndex = $(this).data('index');
-                console.log('Row Data-Index:', rowIndex);
+                //console.log('Row Data-Index:', rowIndex);
 
                 rowIndices.push(rowIndex);
             });
@@ -335,7 +338,7 @@
                     attributes: selectedAttributes,
                     editStatus: editstatus,
                     productId: productId,
-                    index: attributeIndex
+                    //index: rowIndices
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -351,7 +354,7 @@
                         var attributesToRemove = response.response.attributesToRemove;
                         console.log(attributesToRemove);
                         var index = response.response.index;
-                         console.log(index);
+                        console.log(index);
                         console.log(prevAttributes);
                         console.log(newAttributes);
                         console.log(attributeOptions);
@@ -376,11 +379,23 @@
 
                                     });
                             }
+
+
                             if (html) {
                                 $('#productRows tr').each(function() {
                                     $(this).find('td').eq(-1).before(html);
                                 });
                             }
+                            $('#productRows tr').each(function(rowIndex) {
+                                $(this).find('select').each(function() {
+                                    var $select = $(this);
+                                    var attributeId = $select.data(
+                                        'attribute-id');
+                                    $select.attr('name', 'variation[' +
+                                        rowIndex +
+                                        '][attributeOptions][]');
+                                });
+                            });
 
                             $('.selectpicker').selectpicker('refresh');
 

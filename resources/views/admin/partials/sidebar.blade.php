@@ -42,8 +42,8 @@
 
 
                         <ul class="collapse">
-                            <li><a href="{{ url('/admin/product-category') }}">Manage Product Category</a></li>
-                            <li><a href="{{ url('/admin/product-category/create') }}">Add Product Category</a></li>
+                            <li><a href="{{ url('/admin/product-category') }}">Manage Category</a></li>
+                            <li><a href="{{ url('/admin/product-category/create') }}">Add Category</a></li>
 
 
                         </ul>
@@ -76,8 +76,8 @@
                                 <li @if(isset($activeSubMenu)) @if($activeSubMenu=='options' ) class="active" @endif @endif>
                                     <a href="#" aria-expanded="true">Attributes Options</a>
                                     <ul class="collapse">
-                                        <li><a href="{{ url('/admin/attribute-options') }}">Manage Attribute Options</a></li>
-                                        <li><a href="{{ url('/admin/attribute-options/create') }}">Add Attribute Options</a></li>
+                                        <li><a href="{{ url('/admin/attribute-options') }}">Manage Options</a></li>
+                                        <li><a href="{{ url('/admin/attribute-options/create') }}">Add Options</a></li>
                                     </ul>
                                 </li>
                             </ul>

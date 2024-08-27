@@ -12,9 +12,18 @@ use Illuminate\Http\Request;
 
 class ProductDetailController extends Controller
 {
-    public function fetchProductDetails($slug)
+    public function fetchProductDetails($categorySlug, $productSlug)
 {
-    $product = Product::where('slug', $slug)->first();
+    $category = ProductCategory::where('slug', $categorySlug)->first();
+
+    if (!$category) {
+        return response()->json([
+            'message' => 'Category does not exist',
+            'status' => '0',
+        ], 404);
+    }
+
+     $product = Product::where('slug', $productSlug)->where('category_id', $category->id)->first();
 
     if (!$product) {
         return response()->json([
