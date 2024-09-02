@@ -7,7 +7,8 @@ use App\Http\Controllers\api\v1\CustomerController;
 use App\Http\Controllers\api\v1\MediaController;
 use App\Http\Controllers\api\v1\ProductCategoryController;
 use App\Http\Controllers\api\v1\ProductDetailController;
-
+use App\Http\Controllers\api\v1\CartController;
+use App\Http\Controllers\api\v1\CheckoutController;
 // use Illuminate\Session\Middleware\StartSession;
 // use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
@@ -40,7 +41,7 @@ use App\Http\Controllers\api\v1\ProductDetailController;
 
 //Public Api Routes
 Route::post('/v1/customer-register', [CustomerController::class, 'customerRegister']);
-//Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);
+Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);
 
 
 Route::get('/v1/product-category', [ProductCategoryController::class, 'getProductCategories']);
@@ -61,11 +62,29 @@ Route::get('/v1/product-detail/{categorySlug}/{productSlug}', [ProductDetailCont
 
 // Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);
 
-// Route::middleware('auth:sanctum')->group( function () {
+Route::middleware('auth:sanctum')->group( function () {
 
-//     Route::get('/v1/my-profile', [CustomerController::class, 'myProfile']);
+    Route::get('/v1/my-profile', [CustomerController::class, 'myProfile']);
+    Route::post('/v1/logout', [CustomerController::class, 'logout']);
 
-// });
+    Route::post('/v1/cart/add', [CartController::class, 'addToCart']);
+    Route::delete('/v1/cart/remove/{cartItemId}', [CartController::class, 'removeFromCart']);
+    Route::get('/v1/cart/fetch', [CartController::class, 'fetchCart']);
+    Route::post('/v1/cart/subtract', [CartController::class, 'subtractItemFromCart']);
+
+});
+
+Route::post('/v1/cart/sync', [CartController::class, 'syncCart']);
+Route::post('/v1/checkout', [CheckoutController::class, 'checkout']);
+Route::post('/v1/success-payment', [CheckoutController::class, 'success']);
+
+// Routes for guests
+//Route::post('/v1/cart/add', [CartController::class, 'addToCart']);
+// Route::post('/v1/cart/update/{productId}', [CartController::class, 'updateCartItem']);
+// Route::post('/v1/cart/remove/{productId}', [CartController::class, 'removeFromCart']);
+// Route::post('/v1/cart/sync', [CartController::class, 'syncCart']);
+// Route::post('/v1/cart/checkout', [CartController::class, 'checkout']);
+// Route::get('/v1/cart', [CartController::class, 'fetchCart']);
 
 // Route::group(['middleware' => ['api', 'session']], function () {
 //     Route::post('/v1/customer-login', [CustomerController::class, 'customerLogin']);

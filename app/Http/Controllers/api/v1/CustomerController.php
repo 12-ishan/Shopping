@@ -94,6 +94,7 @@ public function customerRegister(Request $request)
                     'message' => 'Login successful',
                     'status' => '1',
                     'token' => $token,
+                    'customer' => $customer->id
                 ]);
               
             } else {
@@ -122,7 +123,7 @@ public function customerRegister(Request $request)
         return response()->json([
             'message' => 'my profile',
             'status' => '1',
-            'user' => $user, // Include the authenticated user's information
+            'customer' => $user, // Include the authenticated user's information
         ], 200);
     }
 
