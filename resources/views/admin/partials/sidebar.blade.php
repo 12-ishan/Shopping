@@ -35,6 +35,22 @@
                     </li>
 
 
+
+                    <li @if(isset($activeMenu)) @if($activeMenu=='Order' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Order Manager
+                            </span></a>
+
+                        <ul class="collapse">
+                            <li><a href="{{ url('/admin/order') }}">Show Order</a></li>
+                            {{-- <li><a href="{{ url('/admin/product/create') }}">Add Product</a></li> --}}
+
+
+                        </ul>
+                    </li>
+
+
+
                     <li @if(isset($activeMenu)) @if($activeMenu=='Product Category' ) class="active" @endif @endif>
                         <a href="javascript:void(0)" aria-expanded="true"><i
                                 class="ti-layout-sidebar-left"></i><span>Product Category
@@ -44,6 +60,21 @@
                         <ul class="collapse">
                             <li><a href="{{ url('/admin/product-category') }}">Manage Category</a></li>
                             <li><a href="{{ url('/admin/product-category/create') }}">Add Category</a></li>
+
+
+                        </ul>
+                    </li>
+
+
+                    <li @if(isset($activeMenu)) @if($activeMenu=='coupon' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Coupon Manager
+                            </span></a>
+
+
+                        <ul class="collapse">
+                            <li><a href="{{ url('/admin/coupon') }}">Manage Coupon</a></li>
+                            <li><a href="{{ url('/admin/coupon/create') }}">Add Coupon</a></li>
 
 
                         </ul>

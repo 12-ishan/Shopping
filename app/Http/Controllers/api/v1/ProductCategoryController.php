@@ -9,13 +9,10 @@ use Illuminate\Http\Request;
 
 class ProductCategoryController extends Controller
 {
-    //
     public function getProductCategories(Request $request)
     {
        $categories = ProductCategory::where('status', 1)->get();
-    // echo '<pre>';
-    // print_r($categories);
-    // die();
+   
         if (empty($categories)) {
 
             $response = [
@@ -42,7 +39,6 @@ class ProductCategoryController extends Controller
         $response = [
             'message' => 'Category not exists',
             'status' => '0',
-          //  'products' => []
         ];
     } else {
         $products = Product::where('category_id', $category->id)->get();
@@ -59,7 +55,7 @@ class ProductCategoryController extends Controller
                 'media_name' => $mediaName,
                 'price' => $product['price'],
                 'description' => $product['description'],
-                'product_category' => $productCategoryName // Add the category name to the response
+                'product_category' => $productCategoryName 
             ];
         }
 
@@ -84,21 +80,21 @@ class ProductCategoryController extends Controller
 
 
 
-public function getSingleProduct($slug){
+// public function getSingleProduct($slug){
 
-    $product = Product::where('slug', $slug)->first();
+//     $product = Product::where('slug', $slug)->first();
 
-    if($product){
-    $reponse = [
-        'message' => 'single product detail',
-        'status' => '1',
-        'product' => $product
-    ];
-   }
+//     if($product){
+//     $reponse = [
+//         'message' => 'single product detail',
+//         'status' => '1',
+//         'product' => $product
+//     ];
+//    }
 
-   return response()->json($response, 201);
+//    return response()->json($response, 201);
 
-}
+// }
    
 }  
 

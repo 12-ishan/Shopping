@@ -49,14 +49,14 @@
                                 <div class="col-6 mt-5">
                                     <div class="form-group">
                                         <label for="couponCode">Coupon Code</label>
-                                        <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Enter coupon code" value="{{old('couponCode',  isset($coupon->couponCode) ? $coupon->couponCode : NULL)}}">
+                                        <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Enter coupon code" value="{{old('couponCode',  isset($coupon->coupon_code) ? $coupon->coupon_code : NULL)}}">
                                     </div>
                                 </div> 
 
                                 <div class="col-6 mt-5">
                                     <div class="form-group">
-                                        <label for="amount">Amount</label>
-                                        <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter coupon amount" value="{{old('amount',  isset($coupon->amount) ? $coupon->amount : NULL)}}">
+                                        <label for="amount">Discount Amount</label>
+                                        <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter coupon amount" value="{{old('amount',  isset($coupon->discount_amount) ? $coupon->discount_amount : NULL)}}">
                                     </div>
                                 </div> 
 

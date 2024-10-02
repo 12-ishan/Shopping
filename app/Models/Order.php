@@ -10,6 +10,6 @@ class Order extends Model
 
     protected $table = 'order';
 
-    protected $fillable = ['user_id', 'session_id'];
+    protected $fillable = ['customer_id', 'session_id'];
 
 }

@@ -49,16 +49,32 @@ class CheckoutController extends Controller
         $order->save();
 
         foreach ($cart->items as $cartItem) {
+            $product = $cartItem->product; 
+        
+            // Create a new OrderItem instance
             $orderItem = new OrderItem();
             $orderItem->order_id = $order->id;
             $orderItem->product_id = $cartItem->product_id;
             $orderItem->quantity = $cartItem->quantity;
-            $orderItem->price = $cartItem->product_price; 
+        
+            if ($product->type == 1) {
+                
+                $variation = $product->productVariation()
+                                     ->where('id', $cartItem->product_variation__id)
+                                     ->first(); 
+                
+                $orderItem->price = $variation ? $variation->price : 0;
+            } else {
+                
+                $orderItem->price = $product->price;
+            }
+        
             $orderItem->status = 1;
             $orderItem->sort_order = 1;
             $orderItem->increment('sort_order');
             $orderItem->save();
         }
+        
 
         $orderBilling = new OrderBilling();
         $orderBilling->order_id = $order->id;

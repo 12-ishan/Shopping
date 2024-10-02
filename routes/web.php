@@ -39,7 +39,7 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProductCategoryController;
 use App\Http\Controllers\admin\ProductAttributesController;
 use App\Http\Controllers\admin\AttributeOptionsController;
-
+use App\Http\Controllers\admin\OrderController;
 
 
 
@@ -103,7 +103,18 @@ Route::group(['middleware' => ['auth']], function () {
       Route::resource('admin/product', ProductController::class);
       Route::post('admin/product/getAttributeOptions',[ProductController::class, 'getAttributeOptions']);
      Route::post('admin/product/add-more',[ProductController::class, 'addVariation']);
-      //Program Routings ends
+      //Program Routings 
+      
+
+       //order Routings
+    
+       Route::post('admin/order/updateSortorder',[OrderController::class, 'updateSortorder']);
+       Route::post('admin/order/destroyAll',[OrderController::class, 'destroyAll']);
+       Route::post('admin/order/updateStatus',[OrderController::class, 'updateStatus']);
+       Route::resource('admin/order', OrderController::class);
+       //Route::post('admin/product/getAttributeOptions',[ProductController::class, 'getAttributeOptions']);
+      //Route::post('admin/product/add-more',[ProductController::class, 'addVariation']);
+       //Program Routings ends
 
     
 

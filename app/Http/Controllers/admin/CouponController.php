@@ -25,7 +25,7 @@ class CouponController extends Controller
     {
         //
         $data = array();
-        $data["coupon"] = Coupon::where('organisation_id', $this->organisation_id)->orderBy('sort_order')->get(); 
+        $data["coupon"] = Coupon::orderBy('sort_order')->get(); 
         $data['pageTitle'] = 'Manage Coupon';
         $data['activeMenu'] = 'master';
         $data['activeSubMenu'] = 'coupon';
@@ -62,7 +62,7 @@ class CouponController extends Controller
         $coupon = new Coupon();
         $coupon->title = $request->input('title');
         $coupon->coupon_code = $request->input('couponCode');  
-        $coupon->amount = $request->input('amount');
+        $coupon->discount_amount = $request->input('amount');
         $coupon->description = $request->input('description');
         $coupon->status = 1;
         $coupon->sort_order = 1;
@@ -103,14 +103,14 @@ class CouponController extends Controller
         $this->validate(request(), [
             'title' => 'required',
             'couponCode' => 'required|min:6',
-            'amount' => 'required|numeric'
+            //'amount' => 'required|numeric'
 
         ]);
         $id = $request->input('id');
         $coupon = Coupon::find($id);
         $coupon->title = $request->input('title');
         $coupon->coupon_code = $request->input('couponCode');  
-        $coupon->amount = $request->input('amount');
+        $coupon->discount_amount = $request->input('amount');
         $coupon->description = $request->input('description');
         $coupon->save();
         return redirect()->route('coupon.index')->with('message', 'Coupon Updated Successfully');

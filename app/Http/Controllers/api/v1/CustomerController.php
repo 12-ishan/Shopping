@@ -4,6 +4,9 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Admin\Order;
+use App\Models\Admin\OrderItem;
+use App\Models\OrderBilling;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +19,12 @@ class CustomerController extends Controller
 
 public function customerRegister(Request $request)
 {
-    // Validate the request data
     $validator = Validator::make($request->all(), [
         'username' => 'required',
         'email' => 'required|email',
         'password' => 'required|min:8'
     ]);
 
-    // Check if validation fails
     if ($validator->fails()) {
         $errors = $validator->errors()->all();
         return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
@@ -116,15 +117,52 @@ public function customerRegister(Request $request)
     
     public function myProfile(Request $request)
     {
-       
-
         $user = Auth::user();
+    
+        $orders = Order::where('customer_id', $user->id)->get();
+    
+        $ordersWithDetails = [];
 
+        foreach ($orders as $order) {
+            
+            $firstOrderItem = OrderItem::where('order_id', $order->id)->first();
+    
+            $orderBilling = OrderBilling::where('order_id', $order->id)->first();
+    
+            $orderData = [
+                'id' => $order->id,
+                'order_status' => $order->order_status,
+                'created_at' => $order->created_at,
+                'order_items' => $firstOrderItem,  
+                'order_billing' => $orderBilling
+            ];
+    
+            $ordersWithDetails[] = $orderData;
+        }
+    
         return response()->json([
             'message' => 'my profile',
             'status' => '1',
-            'customer' => $user, // Include the authenticated user's information
+            'customer' => $user,  
+            'orders' => $ordersWithDetails  
         ], 200);
+    }
+   
+    public function orderDetails(Request $request, $order_id){
+
+        $user = Auth::user();
+
+        $order = Order::with('orderItems', 'orderBilling')->where('customer_id', $user->id)->where('id', $order_id)->get();
+
+        if (!$order) {
+            return response()->json([
+                'message' => 'Order not found or does not belong to the authenticated user.',
+            ], 404);
+        }
+
+        return response()->json([
+            'orderDetail' => $order,
+        ]);
     }
 
 

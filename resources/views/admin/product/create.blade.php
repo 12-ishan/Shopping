@@ -305,7 +305,6 @@
         $('#attributesContainer .form-check-input').on('change', updateButtonState);
         updateButtonState();
 
-
         $('#applyAttributesBtn').on('click', function(event) {
             event.preventDefault();
 
@@ -424,6 +423,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
+                    
                     if (response.success) {
 
                         $('#productRows').append(response.response.html);
@@ -433,6 +433,7 @@
 
                         attributeIndex = response.response.index;
                         console.log(attributeIndex);
+                       
                     } else {
                         console.error('Failed to fetch attribute options.');
                     }

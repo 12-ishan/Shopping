@@ -1,30 +1,22 @@
 <?php
 
-namespace App\Model\Admin;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
-    protected $table = 'lms_order_item';
+    protected $table = 'order_items';
 
-    public function program()
+    public function product()
     {
-        return $this->belongsTo('App\Model\Admin\Program', 'programId', 'id');
+        return $this->belongsTO('App\Models\Admin\Product', 'product_id', 'id');
     }
 
-    public function subject()
+    public function orders()
     {
-        return $this->belongsTo('App\Model\Admin\Subject', 'subjectId', 'id');
+        return $this->hasMany('App\Models\Admin\Order', 'id', 'order_id');
     }
 
-    public function topic()
-    {
-        return $this->belongsTo('App\Model\Admin\Topic', 'topicId', 'id');
-    }
 
-    public function state()
-    {
-        return $this->belongsTo('App\Model\Admin\States', 'stateId', 'id');
-    }
 }

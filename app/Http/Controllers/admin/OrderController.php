@@ -5,8 +5,10 @@ namespace App\Http\Controllers\admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Admin\GeneralSetting;
-use App\Model\Admin\Order;
-use App\Model\Admin\OrderItem;
+use App\Models\Admin\Order;
+use App\Models\Admin\OrderItem;
+use App\Models\OrderBilling;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -18,6 +20,7 @@ class OrderController extends Controller
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
             $this->userId = Auth::user()->id;
+            $this->accountId = Auth::user()->accountId;
             return $next($request);
         });
     }
@@ -31,9 +34,8 @@ class OrderController extends Controller
     {
         $data = array();
 
-        $data["order"] = Order::orderBy('sortOrder')->get();
-      
-
+        $data["order"] = Order::orderBy('sort_order')->with('username', 'cart')->get();
+       
         $data["pageTitle"] = 'Manage Order';
         $data["activeMenu"] = 'order';
         return view('admin.order.manage')->with($data);
@@ -97,15 +99,26 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $data = array();
+        $order = Order::find($id);
 
-        $data['order'] = Order::find($id);
-       // $data['orderBilling'] = OrderBilling::where('orderId', $id)->first();
-        $data['orderItem'] = OrderItem::where('orderId', $id)->get();
-       // $data['generalSetting'] = GeneralSetting::find(1);
-       // echo "<pre>"; print_r( $data['orderBilling']); die();
+        $cart = Cart::where(function ($query) use ($order) {
+            if ($order->customer_id) {
+                $query->where('customer_id', $order->customer_id);
+            } else {
+                $query->where('session_id', $order->session_id);
+            }
+        })->first();
+    
+        $customer = $order->username;
+    
+        $data['order'] = $order;
+        $data['cart'] = $cart;
+        $data['customer'] = $customer; 
+        $data['orderBilling'] = OrderBilling::where('order_id', $id)->first();
+        $data['orderItem'] = OrderItem::where('order_id', $id)->with('product')->get();
         $data["pageTitle"] = 'Order Details';
         $data["activeMenu"] = 'order';
+    
         return view('admin.order.show')->with($data);
         
     }
