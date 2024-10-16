@@ -24,12 +24,15 @@ use App\Models\Admin\ProductCategory;
 if (! function_exists('imageUpload')) {
 
     function imageUpload($image, $referencedImageId, $userId, $path) {
+       
    
         $imageName =  time() . "_" . $image->getClientOriginalName();
+       
 
             $image->move(public_path($path), $imageName);  // Upload imgae to specified folder
 
             $mediaRecord = Media::orderBy('sortOrder')->where('userId', $userId)->where('id', $referencedImageId)->first();
+           
            
             //Check if Media record exits for particular if not then add other wise update
 

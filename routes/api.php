@@ -10,6 +10,10 @@ use App\Http\Controllers\api\v1\ProductDetailController;
 use App\Http\Controllers\api\v1\CartController;
 use App\Http\Controllers\api\v1\CheckoutController;
 use App\Http\Controllers\api\v1\CouponController;
+use App\Http\Controllers\api\v1\GeneralSettingsController;
+use App\Http\Controllers\api\v1\LandingPagesController;
+use App\Http\Controllers\api\v1\ContactController;
+use App\Http\Controllers\api\v1\WishListController;
 // use Illuminate\Session\Middleware\StartSession;
 // use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
@@ -74,11 +78,24 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/v1/cart/fetch', [CartController::class, 'fetchCart']);
     Route::post('/v1/cart/update', [CartController::class, 'updateCart']);
 
+    Route::post('/v1/wish-list/add', [WishListController::class, 'addToWishList']);
+    Route::get('/v1/wish-list/fetch', [WishListController::class, 'fetchWishList']);
+    Route::delete('/v1/wish-list/remove/{wishlistId}', [WishListController::class, 'removeFromWishList']);
+
 });
 
 Route::post('/v1/cart/sync', [CartController::class, 'syncCart']);
 Route::post('/v1/checkout', [CheckoutController::class, 'checkout']);
 Route::post('/v1/success-payment', [CheckoutController::class, 'success']);
+
+Route::get('/v1/search', [ProductCategoryController::class, 'search']);
+Route::get('/v1/home', [GeneralSettingsController::class, 'homePage']);
+Route::get('/v1/website-logo', [GeneralSettingsController::class, 'websiteLogo']);
+
+Route::get('/v1/landing-pages/{slug}', [LandingPagesController::class, 'landingPages']);
+Route::get('/v1/get-filtered-products/{slug}/{optionId}', [ProductCategoryController::class, 'getFilteredProducts']);
+Route::post('/v1/contact', [ContactController::class, 'contact']);
+
 
 // Routes for guests
 //Route::post('/v1/cart/add', [CartController::class, 'addToCart']);

@@ -48,7 +48,7 @@ public function customerRegister(Request $request)
         $response = [
             'message' => 'Registered successfully',
             'status' => 'success',
-            'customer' => $customerId,
+           // 'customer' => $customerId,
         ];
     }
     else {
@@ -57,7 +57,7 @@ public function customerRegister(Request $request)
         $response = [
             'message' => 'email already exist',
             'status' => 'error',
-            'customer' => $customerId,
+           // 'customer' => $customerId,
         ];
     }
     return response()->json($response, 201);
@@ -95,7 +95,7 @@ public function customerRegister(Request $request)
                     'message' => 'Login successful',
                     'status' => '1',
                     'token' => $token,
-                    'customer' => $customer->id
+                    //'customer' => $customer->id
                 ]);
               
             } else {
