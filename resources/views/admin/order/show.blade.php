@@ -42,11 +42,7 @@
                                         <div class="col-md-6 text-md-right">
                                             <ul class="invoice-date">
                                                 <li>Order Date : {{ $order->created_at }}</li>
-                                                <li>Order Status :  @if($order->orderStatus == 1)
-                                                Pending
-                                                @elseif($order->orderStatus == 2)
-                                                Completed
-                                                @endif</li>
+                                                <li>Order Status :  {{$order->order_status}}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -55,13 +51,11 @@
                                             <thead>
                                                 <tr class="text-capitalize">
                                                     <th class="text-center" style="width: 5%;">S.No.</th>
-                                                    <th class="text-left" style="width: 15%; min-width: 130px;">Program</th>
-                                                    <th class="text-left">Subject</th>
-                                                    <th class="text-left">Topic</th>
-                                                    <th class="text-left">Number Of Session</th>
-                                                    <th class="text-left">State</th>
+                                                    <th class="text-left" style="width: 15%; min-width: 130px;">Product</th>
+                                                    <th class="text-left">Quantity</th>
+                                                    <th class="text-left">Customer Name</th>
                                                     <th style="min-width: 100px">Cost</th>
-                                                    <!-- <th>total</th> -->
+                                                    <th>total</th> 
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -71,19 +65,18 @@
                                             @foreach($orderItem as $value)
                                                 <tr>
                                                     <td class="text-center">{{ $i }}</td>
-                                                    <td class="text-left">{{ $value->program->name }}</td>
-                                                    <td class="text-left">{{ $value->subject->name }}</td>
-                                                    <td class="text-left">{{ $value->topic->title }}</td>
-                                                    <td class="text-left">{{ $value->noOfSessionn }}</td>
-                                                    <td class="text-left"> {{ $value->state->name }}</td>
-                                                    <td>
-                                                        @if(empty($value->amount))
+                                                    <td class="text-left">{{ $value->product->name }}</td>
+                                                    <td class="text-left">{{  $value->quantity }}</td>
+                                                    <td class="text-left">{{  $customer->username }}</td>
+                                                    {{-- <td class="text-left">{{  $orderBilling->first_name }}</td> --}}
+                                                    <td>&#8377;
+                                                        @if(empty($value->product->price * $value->quantity))
                                                         0
                                                         @else
-                                                        {{ $value->amount }}
+                                                        {{ $value->product->price}} &#10005; {{$value->quantity}}
                                                         @endif          
                                                     </td>
-                                                    <!-- <td>$40</td> -->
+                                                    <td>&#8377;{{ $value->product->price * $value->quantity}}</td> 
                                                 </tr>
                                                 @php $i++ @endphp 
                                             @endforeach                    
@@ -92,7 +85,7 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="6">total:</td>
-                                                    <td>{{$order->totalAmount }}</td>
+                                                    <td>&#8377;{{$cart->total_amount }}</td>
                                                 </tr>
                                             </tfoot>
                                         </table>

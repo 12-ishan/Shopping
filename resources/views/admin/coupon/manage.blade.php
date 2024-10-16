@@ -58,6 +58,8 @@
                                     <th width="5%">Seq.</th>
                                     <th style="width:2px;max-width:2px;"></th>
                                     <th>Title</th>
+                                    <th>Coupon Code</th>
+                                    <th>Amount</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -72,6 +74,8 @@
                                     </td>
 
                                     <td>@isset($value->title){{$value->title}}@else NA @endif</td>
+                                    <td>@isset($value->coupon_code){{$value->coupon_code}}@else NA @endif</td>
+                                    <td>@isset($value->discount_amount){{$value->discount_amount}}@else NA @endif</td>
                                    
                                     
                                     

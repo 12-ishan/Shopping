@@ -39,9 +39,10 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProductCategoryController;
 use App\Http\Controllers\admin\ProductAttributesController;
 use App\Http\Controllers\admin\AttributeOptionsController;
-
-
-
+use App\Http\Controllers\admin\OrderController;
+use App\Http\Controllers\admin\GeneralSettingsController;
+use App\Http\Controllers\admin\LandingPagesController;
+use App\Http\Controllers\admin\ContactLeadsController;
 
 
 /*
@@ -103,7 +104,18 @@ Route::group(['middleware' => ['auth']], function () {
       Route::resource('admin/product', ProductController::class);
       Route::post('admin/product/getAttributeOptions',[ProductController::class, 'getAttributeOptions']);
      Route::post('admin/product/add-more',[ProductController::class, 'addVariation']);
-      //Program Routings ends
+      //Program Routings 
+      
+
+       //order Routings
+    
+       Route::post('admin/order/updateSortorder',[OrderController::class, 'updateSortorder']);
+       Route::post('admin/order/destroyAll',[OrderController::class, 'destroyAll']);
+       Route::post('admin/order/updateStatus',[OrderController::class, 'updateStatus']);
+       Route::resource('admin/order', OrderController::class);
+       //Route::post('admin/product/getAttributeOptions',[ProductController::class, 'getAttributeOptions']);
+      //Route::post('admin/product/add-more',[ProductController::class, 'addVariation']);
+       //Program Routings ends
 
     
 
@@ -115,6 +127,17 @@ Route::group(['middleware' => ['auth']], function () {
      Route::resource('admin/product-category', ProductCategoryController::class);
  
      //Product Category Routings ends
+
+
+     //Landing pages Routings
+         
+     Route::post('admin/landing-page/updateSortorder', [LandingPagesController:: class, 'updateSortorder']);
+     Route::post('admin/landing-page/destroyAll', [LandingPagesController:: class, 'destroyAll']);
+     Route::post('admin/landing-page/updateStatus', [LandingPagesController:: class, 'updateStatus']);
+     Route::resource('admin/landing-page', LandingPagesController::class);
+ 
+     //Landing pages Routings ends
+
 
      //Attributes Routings
     
@@ -134,6 +157,14 @@ Route::group(['middleware' => ['auth']], function () {
       Route::resource('admin/attribute-options', AttributeOptionsController::class);
   
       //Attributes  Routings ends
+
+
+       //contact Leads Routings
+       Route::post('admin/contact/leads/updateSortorder',[ ContactLeadsController::class, 'updateSortorder']);
+       Route::post('admin/contact/leads/destroyAll',[ ContactLeadsController::class, 'destroyAll']);
+       Route::post('admin/contact/leads/updateStatus',[ ContactLeadsController::class, 'updateStatus']);
+       Route::resource('admin/contact/leads', ContactLeadsController::class);
+        //contact Leads Routings ends
  
 
 
@@ -218,6 +249,14 @@ Route::group(['middleware' => ['auth']], function () {
                Route::post('admin/stream/updateStatus',[ StreamController::class, 'updateStatus']);
                Route::resource('admin/stream', StreamController::class);
                //Stream Routings ends
+
+               //General Settings Routings
+      Route::get('admin/general-settings/home-page-setting', [GeneralSettingsController::class, 'index'])->name('home');
+      Route::put('admin/generalSettings', [GeneralSettingsController::class, 'update'])->name('update');
+
+      Route::get('admin/general-settings/website-logo-setting', [GeneralSettingsController::class, 'websiteLogo'])->name('websiteLogo');
+      Route::put('admin/generalSettings/website-logo', [GeneralSettingsController::class, 'updateLogo'])->name('updateLogo');
+      //General Settings Routings ends
 
                 // //Profile Routings
                 // Route::post('admin/profile/updateSortorder',[ ProfileController::class, 'updateSortorder']);

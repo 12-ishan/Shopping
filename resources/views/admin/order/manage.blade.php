@@ -79,17 +79,11 @@
                                     </td>
 
                                     <!-- <td>{{$value->orderNumber}} </td> -->
-                                    <td><a href="{{route('order.show', $value->id)}}">{{$value->customerFirstName}} {{$value->customerLastName}} </a></td>
-                                    <td>@isset($value->customerEmail){{$value->customerEmail}}@else NA @endif </td>
-                                    <td>@isset($value->totalAmount){{$value->totalAmount}}@else NA @endif</td>
+                                    <td><a href="{{route('order.show', $value->id)}}">@isset($value->username){{$value->username->username}}@else NA @endif </a></td>
+                                    <td>@isset($value->username){{$value->username->email}}@else NA @endif </td>
+                                    <td>@isset($value->cart){{$value->cart->total_amount}}@else NA @endif</td>
                                     <td>
-                                        @if($value->orderStatus == 1)
-                                        Pending
-                                        @elseif($value->orderStatus == 2)
-                                        Completed
-                                        @else
-                                        Hold
-                                        @endif
+                                        @isset($value->order_status){{$value->order_status}}@else NA @endif
                                     </td>
 
                                     <!-- <td>

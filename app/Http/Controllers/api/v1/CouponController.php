@@ -13,18 +13,21 @@ class CouponController extends Controller
     //
     public function couponDetails(Request $request)
     {
-        $checkCoupon = Coupon::where('id', $request->coupon_id)->where('status', 1)->first();
+        $checkCoupon = Coupon::where('coupon_code', $request->couponCode)
+                             ->where('status', 1)
+                             ->first();
     
         if (empty($checkCoupon)) {
 
             $response = [
-                'message' => 'coupon  not exists',
+                'message' => 'coupon code is not valid',
                 'status' => '0',
             ];
         } 
         else {
             $response = [
-                'message' => 'coupon exists',
+                'amount' => $checkCoupon->discount_amount,
+                'message' => 'coupon applied',
                 'status' => '1'
             ];
         }

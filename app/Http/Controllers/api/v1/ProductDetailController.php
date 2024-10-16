@@ -61,6 +61,7 @@ class ProductDetailController extends Controller
         foreach ($product->productVariation as $variation) {
             
             $productVariation[$i] = [
+                'id' => $variation->id,
                 'sku' => $variation->sku,
                 'price' => $variation->price,
                 'stock' => $variation->stock,

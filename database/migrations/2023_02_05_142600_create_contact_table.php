@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
+            $table->string('subject')->nullable();
             $table->string('message')->nullable();
             $table->tinyInteger('status');
             $table->integer('sortOrder');

@@ -35,6 +35,36 @@
                     </li>
 
 
+                    <li @if(isset($activeMenu)) @if($activeMenu=='Landing Page' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Landing Page Manager
+                            </span></a>
+
+                        <ul class="collapse">
+                            <li><a href="{{ url('/admin/landing-page') }}">Manage Landing Pages</a></li>
+                            <li><a href="{{ url('/admin/landing-page/create') }}">Add Landing page</a></li>
+
+
+                        </ul>
+                    </li>
+
+
+
+                    <li @if(isset($activeMenu)) @if($activeMenu=='Order' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Order Manager
+                            </span></a>
+
+                        <ul class="collapse">
+                            <li><a href="{{ url('/admin/order') }}">Show Order</a></li>
+                            {{-- <li><a href="{{ url('/admin/product/create') }}">Add Product</a></li> --}}
+
+
+                        </ul>
+                    </li>
+
+
+
                     <li @if(isset($activeMenu)) @if($activeMenu=='Product Category' ) class="active" @endif @endif>
                         <a href="javascript:void(0)" aria-expanded="true"><i
                                 class="ti-layout-sidebar-left"></i><span>Product Category
@@ -44,6 +74,21 @@
                         <ul class="collapse">
                             <li><a href="{{ url('/admin/product-category') }}">Manage Category</a></li>
                             <li><a href="{{ url('/admin/product-category/create') }}">Add Category</a></li>
+
+
+                        </ul>
+                    </li>
+
+
+                    <li @if(isset($activeMenu)) @if($activeMenu=='coupon' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Coupon Manager
+                            </span></a>
+
+
+                        <ul class="collapse">
+                            <li><a href="{{ url('/admin/coupon') }}">Manage Coupon</a></li>
+                            <li><a href="{{ url('/admin/coupon/create') }}">Add Coupon</a></li>
 
 
                         </ul>
@@ -87,6 +132,44 @@
                     @endif
                     @endif
  
+                    @if(isset(Auth::user()->roleId))
+                    @if(Auth::user()->roleId == 1)
+    
+                    <li @if(isset($activeMenu)) @if($activeMenu=='generalSettings' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>General Settings
+                            </span></a>
+    
+    
+                        <ul class="collapse">
+                           
+                            <li><a href="{{ url('/admin/general-settings/home-page-setting') }}">Home Page Setting</a></li>
+                            <li><a href="{{ url('/admin/general-settings/website-logo-setting') }}">Website logo Setting</a></li>
+    
+    
+                        </ul>
+                    </li>
+                    @endif
+                    @endif
+
+
+                    @if(isset(Auth::user()->roleId))
+                    @if(Auth::user()->roleId == 1)
+    
+                    <li @if(isset($activeMenu)) @if($activeMenu=='contact leads' ) class="active" @endif @endif>
+                        <a href="javascript:void(0)" aria-expanded="true"><i
+                                class="ti-layout-sidebar-left"></i><span>Contact Leads
+                            </span></a>
+    
+    
+                        <ul class="collapse">
+                           
+                            <li><a href="{{ url('/admin/contact/leads') }}">Manage</a></li>
+    
+                        </ul>
+                    </li>
+                    @endif
+                    @endif
                   
 
                   
